@@ -1,0 +1,2490 @@
+[[index|back]]
+= Google Cloud Associate Engineer =
+
+=== Practice Exams ===
+https://gcp-examquestions.com/gcp-associate-cloud-engineer-practice-exam-part-1/
+https://docs.google.com/forms/d/e/1FAIpQLSfexWKtXT2OSFJ-obA4iT3GmzgiOCGvjrT9OfxilWC1yPtmfQ/viewform
+
+=== Cloud Resource Manager ===
+Management Services
+Resource Hierarchy
+Resource Hierarchy Hands On
+Labels
+Quotas
+
+=== Cloud IAM ===
+Cloud IAM Overview
+IAM Hands-On Part 1
+IAM Hands-On Part 2
+Service Accounts
+Service Accounts Hands On
+IAM Best Practices
+
+=== Billing ===
+Billing Overview
+Hands On - Billing and IAM
+
+=== Operations ===
+Operations Overview
+Cloud Logging Concepts
+Hands On - Cloud Logging
+Cloud Monitoring Concepts
+Hands On - Cloud Monitoring
+Trace, Error Reporting, and Debug Concepts
+Hands On - APM Trace, Error Reporting, and Debug
+
+=== Google Cloud Storage ===
+CLoud Storage Concepts
+Using the gsutil Command
+Cloud Storage Security Concepts
+Hands On - Cloud Storage Security
+Object Versioning and Lifecycle Management
+Hands On - Object Versioning
+gsutil Command Line A-Z
+
+=== Managed Databases on Google Cloud Platform ===
+Managed Databases Overview
+Managed Databases on Google Cloud
+Cloud SQL Closer Look
+BigQuery Overview
+
+=== Virtual Networks ===
+VPC Concepts
+VPC Hands-On
+Firewalls
+Shared VPC Concepts
+Hands On - Shared VPC
+
+=== Interconnecting Networks (Hybrid Networking) ===
+The Power of the network
+Connecting your network to Google
+Cloud VPN
+Hands On - Cloud VPN
+Hands On - Cloud Router
+Google Cloud DNS
+
+=== Compute Engine - Virtual Machines ===
+Compute Engine Deep Dive
+Disks
+Hands On - Disks
+Hands On - Attaching and Resizing Disks
+Images
+Hands On - Custom Images
+Snapshots
+Startup and Shutdown Scripts
+Preemptible VM's
+
+=== Load Balancing and Instance Groups ===
+Force multipliers - Automation and Scaling
+Load Balancers
+Instance Groups and Autoscaling
+Hands On - Managed Instance Group
+Hands On - Load Balancer
+Hands On - AUtoscaler and Instance Group Updates
+
+=== Google Cloud CDN ===
+Cloud CDN Concepts
+
+=== Cloud Deployment Manager ===
+Cloud Deployment Manager Concepts
+Hands On - Cloud Deployment Manager
+
+=== Compute Servicse Overview===
+Where should I run my code?
+
+=== App Engine ===
+App Engine Overview
+Hands On - App Engine Versions and Memcache
+
+=== Kubernetes Engine ===
+Container Resources
+
+GKE Administration Concepts
+gcloud command used on resources
+kubectl used on pods
+
+GKE Commands and Hands-on
+Set default region/zone
+    gcloud config set compute/region us-central1
+    gcloud config set compute/zone us-central1-a
+
+Enable API's
+    gcloud services enable container.googleapis.com
+    gcloud services enable containerregistry.googleapis.com
+
+Clone github for sample application and browse to directory
+    git clone https://github.com/linuxacademy/content-gc-essentials
+    cd content-gc-essentials/gke-lab-01
+
+Package code into Docker container - tag as version 1 ("build it")
+    docker build -t gcr.io/$DEVSHELL_PROJECT_ID/hello-la:v1 .
+
+Note: the period at the end is required to build it at this location
+
+Check status of images to ensure success
+    docker images
+
+Authenticate gcloud as a Docker credential helper
+    gcloud auth configure-docker
+
+Push Docker container into Container Registry
+    docker push gcr.io/$DEVSHELL_PROJECT_ID/hello-la:v1
+
+Create Kubernetes Engine Cluster (Nodes) named 'hello-cluster'
+    gcloud container clusters create hello-cluster --num-nodes=2
+
+Authenticate kubectl to point to the cluster we just made (already done for last created cluster)
+    gcloud container clusters get-credentials hello-cluster
+
+Deploy your app ("deploy and run it") - listen on port 80
+    kubectl create deployment hello-la --image=gcr.io/$DEVSHELL_PROJECT_ID/hello-la:v1
+
+Check out our pods on the nodes
+    kubectl get pods
+
+Create load balancer and expose application to the Internet on port 80
+    kubectl expose deployment hello-la --type=LoadBalancer --port 80 --target-port 80
+
+Find our load balancer frontend IP address
+    kubectl get service
+
+Scale up deployment - add static number of replicas (pods)
+    kubectl scale deployment hello-la --replicas=3
+
+On second thought, let's just autoscale our application instead....
+
+Horizontal Pod Autoscaler
+    kubectl autoscale deployment hello-la --max 6 --min 4 --cpu-percent 50
+
+Maybe we should statically resize the node pool/cluster as well?
+    gcloud container clusters resize hello-cluster --size 3
+
+    If more than one pool per cluster, specify pool with --node-pool (pool_name)
+
+On second thought (again), let's also enable autoscaling for our cluster
+    gcloud container clusters update hello-cluster --enable-autoscaling --min-nodes 2 --max-nodes 8
+
+Make changes to source code, then build as Docker file as VERSION 2
+    docker build -t gcr.io/$DEVSHELL_PROJECT_ID/hello-la:v2 .
+
+Push to Container Registry, also as version 2
+    docker push gcr.io/$DEVSHELL_PROJECT_ID/hello-la:v2
+
+Update our website - Apply rolling update to deployment with image update
+    kubectl set image deployment/hello-la hello-la=gcr.io/$DEVSHELL_PROJECT_ID/hello-la:v2
+
+Get log info
+
+Logs are written to pods, by default also written to Stackdriver Logging
+
+View log on pod
+    kubectl logs (POD_ID)
+
+Other commands/scenarios
+
+Upgrade version of Kubernetes on cluster
+    gcloud container clusters upgrade (cluster_name)
+
+
+=== Big Data, Machine Learning, and Data Lifecycle===
+Big Data and Machine Learning Services
+Data Lifecycle
+
+=== Case Studies ===
+Case Study Overview
+Mountkirk Games
+Dress4win
+TerramEarth
+
+=== Planning your cloud transition ===
+Making the case fro the Cloud and GCP
+Cost Optimization
+Architecting Cloud Applications
+
+=== Migrating to Google Cloud ===
+Planning a successful cloud migration
+Storage Transfer Service
+Data Migration Best Practices
+Migrating Applications
+
+=== Resilient Cloud Solution Infrastructure===
+Disaster Recovery Concepts
+Backup and Recovery Methods in GCP
+
+=== Security and Compliance ===
+Security Methods in GCP
+Network Design for Security and Isolation
+Legal Compliance and Audits
+
+=== Development Practices ===
+Software Development Lifecycle Concepts
+Testing your application for resiliency
+
+=== Getting Ready for the Exam ===
+Additional Study Resources
+Preparing for the Exam
+
+== Learn Google Cloud by Doing ==
+=== Google Cloud Storage ===
+Working with Google Cloud Storage
+Bucket name restrictions:
+Use lowercase letters, numbers, hyphens and underscores
+Dots can be used for verified domain names (no IP addressses)
+Must start and end with letter or number
+Must contain 3 to 63 characters
+Must be unique across Google Cloud Platform
+
+Make sure Google Cloud Storage API is active
+
+Menu > Storage Browser
+
+Name
+Storage class
+Location
+Access control model
+
+Bucket name
+Easy to upload via GUI
+Rename through browser
+
+Clone repo in cloud console
+cloudshell dl FILEPATH
+
+Copy to bucket
+gsutil cp FILE gs://BUCKET
+
+Make bucket
+gsutil mb -c regional -l REGION gs://BUCKET
+
+List buckets
+gsutil ls
+
+Change public access
+gsutil acl ch -u AllUsers:R gs://BUCKET/FILE
+
+Can move between buckets
+gsutil cp gs://BUCKET/FILE gs://BUCKET/FILE
+
+Object versioning in a Google CLoud Storage Bucket
+
+Menu > Storage
+
+get current versioning policy
+gsutil versioning get gs://BUCKET
+
+Enable Object Versioning
+gsutil versioning set on gs://BUCKET
+
+Check full object details in bucket
+gsutil ls -a gs://BUCKET
+
+Copy a few versions of files into bucket
+gsutil cp FILE gs://BUCKET
+
+#LONGNUMBER, generation
+
+Removing generation
+gsutil mv gs://BUCKET/FILE#11111 gs://BUCKET/FILE
+
+Instance template
+Stop instances
+gcloud compute images create TEMPLATE --family=FAMILY
+--source-disk=DISK --source-disk-zone=ZONE
+gcloud compute images create TEMPLATE --familty=FAMILY
+--source-disk=DISK --source-disk-zone=ZONE
+
+Drop down, create a healthcheck
+Protocol TCP
+Port 80
+
+Update to new version
+Instance Templates
+Boot disk to custom image
+Instance Groups
+Group
+Click rolling update
+Template dropdown
+
+Connection to VPCs
+VPC network
+External IP addresses
+Reserve a static address
+
+Hybrid connectivity
+VPN
+Create a connection
+Name
+Desctiption
+Name tunnel
+Paste IP address
+IKEv2
+Generate key, copy and paste
+
+Create VPC network
+Global dynamic routing
+VPN Gateway
+Network1
+Central1
+Create Gateway address
+
+Tunnels
+Remote peer IP address, gateway address
+Generate shared secret key
+Dynamic routing
+Choose router created earlier
+BGP-2
+
+Monitoring VMs with Cloud Monitoring
+Monitoring
+Select Metric and target
+
+Cloud Bigtable
+Adheres to HBase API
+
+Configure with console
+Create Schema with HBase
+
+Scale down machine to save costs
+Cluster
+cluster ID
+Region/Zone
+
+HBase commands:
+Create table
+create 'TABLE','COLUMN_FAMILY'
+list to show table
+column qualifier
+put 'TABLE','ROW','COLUMN_FAMILY:CELL','VALUE'
+scan 'TABLE' to show data
+
+Running queries
+Queries use MySQL syntax
+
+Setting up a Google Cloud Environment
+Create an instance
+Make sure project is correct
+Menu > Compute > Compute Engine > VM Instances
+Create
+Install nginx
+start service
+/var/www/html
+index
+
+Migrating source code to a Google Cloud Source Repository
+clone repo using git
+go to repo
+
+Create two instances, one for backend and one for front end
+mongod --dbpath PATH --port PORT --fork --logpath PATH
+Service running on backend
+
+Set up front end
+Node.js
+Git
+npm
+Application
+
+get node.js using curl
+
+Starting App
+Will need internal IPs from instances
+nohup nodejs server.js --be_ip IP -fe_ip IP
+
+Deploying to a Google Kubernetes Engine Cluster
+Git clone project
+
+Building containers
+docker build -t NAME .
+Includes files in directory
+
+gcloud auth configure-docker
+
+tag image with registry name, will need project ID
+docker tag NAME gcr.io/PROJECT/CONTAINER:tag
+
+docker push gcr.io/PORJECT/IMAGE:TAG
+
+GCP Container Registry
+
+Navigate to Kubernetes > Workloads
+Select container for existing image container
+YAML tab
+Edit, set number of replicas to 4
+Deployment Details > Expose
+Service type to Load Balancer
+Click Expose
+Click external IP link
+
+Deploying Resources with Google Cloud Deployment Manager
+Download configuration files used for this lab
+Download the configuration files we will use for this lab by copy/pasting the following command:
+gsutil -m cp -r gs://la-gcp-labs-resources/deployment-manager-basic/* .
+
+Create your first single VM deployment
+From Cloud Shell, open the editor window by clicking the pencil icon in the top-right.
+In the new window that appears, click on vm-web.yaml.
+In the vm-web.yaml file, change all (YOUR_PROJECT) fields to reflect your current project ID. There should be 2 total.
+Make sure the changes are saved by going to File - Save from the Cloud Shell Editor menu.
+gcloud deployment-manager deployments create single-vm --config vm-web.yaml
+
+Deploy complex deployment with dependencies
+Back in the Cloud Shell Editor, select the file dependencies.yaml.
+Under the resource for server-1, scroll down to the NetworkInterfaces properties and notice that the network and subnetwork have a reference field supplied. This tells Deployment Manager that deploying this instance depends on other resources in the same deployment being created first. You can view other dependencies throughout the rest of the config file.
+As before, change all the '(YOUR_PROJECT)' fields to your current project ID. There are again two total, which you can find by the #CHANGE ME at the end of each affected line
+Make sure the changes are saved by going to File - Save from the Cloud Shell Editor menu.
+Deploy Configuration:
+gcloud deployment-manager deployments create vpcs --config dependencies.yaml
+
+View deployment manifest and delete deployment
+
+After deployment is complete, let's view the manifest:
+
+Still in command prompt, view details of your deployment:
+gcloud deployment-manager deployments describe vpcs
+
+Look for a field in the form of manifest-(TIMESTAMP). Copy this field.
+Type in the following to view the full manifest, supplying the manifest ID you copied above:
+gcloud deployment-manager manifests describe manifest-(TIMESTAMP) --deployment vpcs
+
+
+Delete your deployment using the following command:
+gcloud deployment-manager deployments delete vpcs
+
+Create deployment with templates
+
+In Cloud Shell, go to your templates directory:
+
+cd templates
+
+In the Code Editor, view the template-config.yaml and the template .jinja files.
+This time, we do not need to change the project ID because the template files are able to automatically resolve the current project ID.
+
+Deploy your template-enabled configuration by typing:
+gcloud deployment-manager deployments create templates --config template-config.yaml
+
+View results in web console, and attempt to open website via external IP.
+Delete deployment using one of the methods above.
+
+Establishing a CI/CD Pipeline with Google Cloud
+
+Continuous Integration/Continuous Delivery
+
+Enable APIs
+    From the Google Cloud console's main navigation, visit APIs & Services > Library to enable the following services:
+        Cloud Functions
+        Source Repositories
+        Cloud Build
+
+Create a Google Cloud Source Repository
+    Activate a Cloud Shell.
+    Create a Source Repository:
+    gcloud source repos create gcpro_repo
+    Clone the repository to the shell:
+    gcloud source repos clone gcpro_repo
+    Clone repository from GitHub:
+    git clone https://github.com/linuxacademy/content-gcpro-developer
+    Copy files to shell repo:
+    cp content-gcpro-developer/cicd-lab/* gcpro_repo
+    cd gcpro_repo
+
+Move Files to Source Repository
+    Use the following commands to commit the files in the shell repo to the newly created Source Repository:
+    git remote add google https://source.developers.google.com/p/[PROJECT_ID]/r/gcpro_repo
+    git add .
+    git config --global user.email "[EMAIL_ADDRESS]"
+    git config --global user.name "[NAME]"
+    git commit -m "Initial Commit"
+    git push --all google
+
+    Visit the Source Repositories dashboard and click gcpro_repo to confirm the files.
+
+Create Cloud Function
+    From the main navigation, go to Cloud Functions.
+    Choose Create function.
+    Configure your function with the following values:
+        Name: la-repo-function-1
+        Trigger: HTTP
+        Source Code: Cloud Source Repository
+        Runtime: Python 3.7
+        Repository: gcpro_repo
+        Function to execute: greetings_http
+    Leave all other fields with their default values and click Create.
+
+Set IAM Permissions
+    From the navigation, go to IAM & admin > IAM.
+    Click the edit icon next to the Cloud Build Service Account entry.
+    Click Add another role.
+    Click in the Role field and filter for Cloud Functions Developer; select it.
+    Click Add another role.
+    Click in the Role field and filter for Service Account User; select it.
+    Click Save.
+
+
+    From the main navigation, go to Cloud Build > Triggers.
+    Click Create trigger.
+    Set the following values:
+        Repository: gcpro_repo.
+        Name: trigger-1
+        Build configuration: Cloud Build configuration file (yaml or json)
+            Make sure Cloud Build configuration file location autopopulates with / cloudbuild.yaml.
+    Leave all other fields with their default values, and click Create trigger.
+
+Define a Cloud Build Trigger
+    From the main navigation, go to Cloud Build > Triggers.
+    Click Create trigger.
+    Set the following values:
+        Repository: gcpro_repo.
+        Name: trigger-1
+        Build configuration: Cloud Build configuration file (yaml or json)
+            Make sure Cloud Build configuration file location autopopulates with / cloudbuild.yaml.
+    Leave all other fields with their default values, and click Create trigger.
+
+Verify Trigger
+    From the Cloud Build Triggers page, click the Run Trigger option associated with the newly defined trigger.
+    Test the trigger by using the Cloud Shell editor to alter the main.py file and pushing to the Source Repository.
+    Visit Cloud Build > History and, if necessary, refresh the page to confirm the new build.
+
+=== Google Cloud Compute Engine and Virtual Networks ===
+
+Creating Instances in Gcloud
+gcloud beta compute disks create DISK --project=NAME --type=TYPE --size=GB --zone=ZONE --physical-block-size=SIZE
+
+View disk info
+lsblk
+
+Format disk
+mkfs
+
+Create mount directory
+mkdir -p /mnt/disks/disk
+
+gcloud commands
+gcloud compute disks create DISK --size=GB --zone=ZONE
+
+Resize disk
+gcloud compute disks resize DISK --size=SIZE --zone=ZONE
+
+Create Windows instance (without disk)
+gcloud compute instances create NAME --zone=ZONE --image=WINDOWS --image-project=PROJECT --both-disk-size=GB
+
+Attack disk
+gcloud compute instances attach-disk NAME --disk=DISK --zone=ZONE
+
+Disk Management > GPT/MBR Partition style
+
+
+Working with custom images on Google Compute Engine
+Create custom image, add to image family
+
+Stop instances before creating images
+
+Create image via command line
+gcloud images create IMAGE --source-disk DISK --source-disk-zone ZONE --family FAMILY
+
+View image family info
+gcloud compute images describe-from-family FAMILY
+
+Deprecate/set active image version
+gcloud compute images deprecate IMAGE --state STATE
+
+Working with Snapshots on Google COmpute Engine
+Create a snapshot with the web console
+
+Make instance change (website change)
+sud sed -i 's/VERSION 1/VERSION 2/' /var/www/html/index.html
+
+Create new snapshot with command line
+gcloud compute disks snapshot website --snapshot-names NAME --zone ZONE
+
+Restore first snapshot version with web console
+Restore second snapshot version with command line
+
+Create disk from snapshot
+gcloud compute disks create NAME --source-snapshot NAME --zone ZONE
+
+Create new instances from disk
+gcloud compute instances create website-restore-2 --disk name=NEW,boot=yes --zone ZONE --tags=type
+
+Subsequent back ups only include new items
+
+New VM Instance
+Management > Automation
+Paste start up script
+Doesn't work well with mass automation
+
+Input via Metadata/script from Cloud Storage Location
+New instance
+Management > Automation > Metadata
+key startup-script-url
+bucket gs://BUCKET/FILE
+
+=== Advanced Networking on Google Cloud ===
+
+=== Big Data and Databases on Google Cloud ===
+
+=== Development Environments in Google Cloud ===
+
+=== Deploying in Google Cloud ===
+
+=== Monitoring on Google Cloud ===
+
+=== Messaging Services on Google Cloud ===
+Cloud Pub/Sub
+
+Make sure API is on
+
+Menu > Big Data > Pub Sub > Topics
+Create a topic
+Name topic
+
+Check messages and acknowledge
+gcloud pubsub subscriptsions pull PUBSUB --auto-ack
+Only returns single message
+
+To get multiple messages
+gcloud pubsub subscriptsions pull PUBSUB --auto-ack --limit=NUMBER
+
+Publish message
+Attributes
+Key
+
+== Google Cloud Network Concepts - GCP Network Engineer Track Part 1 ==
+=== Getting Started ===
+What is the role of a Google Cloud Network Engineer?
+Design, plan and prototype a GCP Network
+Implement a GCP VPC
+Increasing network/resource avialability
+Extending your network
+  Subnets
+  DNS
+Hybrid connectivity
+  VPN, Interconnect, Peering
+  Sharing between rpojects
+  Shared BPN, Network peering
+Securing network resource
+  Firewalls
+  IAM
+  Cloud Armor
+  SSH connection methods
+Monitoring your network
+  Stackdriver monitoring and Logging
+  VPC FLow logs
+
+=== GCP Networking Fundamentals ===
+
+Google Cloud Networking Infrastructure
+Fundamentals
+VPC's, subnets, firewalls foundation for rest of topics
+
+Regions are collections of zones
+Zones are deployment areas for GCP resources within a region
+
+Edge point of presence (POP)
+Where Google's network connects to the rest of the internet
+Over 310 exchanges exist around the world
+
+So what's the point?
+GCP is global in scope
+All traffic is on Google's private network
+  Better security, routing and performance
+GCP networking resources privately communicate all over the world by default
+
+What is a Virtual Private Cloud (VPC)
+Software defined network (SDN)
+  Traditional network = multiple hardware compnenets (routers, servers, switches, load balancers, firewall devices, devices ocnfigurations etc)
+  Hardware management is abstracted away
+  Removes maintenance and overhead
+  Rapidly customize and scale services
+  Traditional networking concepts apply
+    Firewalls, routes, load balancing, subnets, DNS, etc.
+Global (multi-regional)
+  RFC 1918 - Private (internal) networking and IP addressing standard
+    Internal/Private IP addressing - not exposted to public internet
+Hybrid networking with on-premises networks that have interconnect options
+Can configure private (internal-only) access to other GCP resources
+Incoming (ingress) traffic is free and outgoing (egress) traffing hass a cost
+
+Subnets
+VPCs do not come with an associate IP range
+SUbnet = a logical network partition
+  Private IP ranges
+    RFC 1918 Private IP ranges (10.x.x.x/172.16.x.x/192.168.x.x)
+  Multiple subnetworks inside of a larger single network
+  Subnetting = dividing network address space to match an organizations internal network
+  needs
+  On GCP - designated using CIDR notation for network/host division
+    Example: 'subnet-a' = 10.0.1.0/10
+GCP Subnet Modes
+Default, Auto Mode, Custom
+Default = created with every new GCP Project
+Auto-mode network + pre-made firewall rules
+
+Auto Mode Network = automatically create subnet for each region
+  One subnet for every region
+    Subnet range of 10.x.x.x/20 per region
+    Get up and running quickly
+  Can manually add additional subnets or convert to custom mode
+  Why use Auto Mode?
+    Easy to set up and use
+    Predfined IP ranges don't overlap with each other
+  Why not use auto mode?
+    Not as flexible as custom mode
+    Don't need subnet for each region
+    Connection two different VPCs (VPN/network peering) = overlapping subnets
+    Often not suitable for production networks
+Custom Mode Network
+  No subnets automatically created - "blank slate"
+  Much more flxeible
+  Build your own network
+VPC mode conversions - one way only
+  Can convert auto mode to custom mode, but not vice-versa
+
+Reserved IP address Subnet 10.1.2.0/24
+10.1.2.0 Network
+10.1.2.1 Default Gateway
+10.1.2.254 Future Use
+10.1.2.255 Broadcast
+
+Bewrae overlapping subnet ranges
+Cannot have two subnet ranges overlap
+Considerations
+  Subnets in same VPC
+  Subnets in multiple peered VPCs
+    Two auto-mode VPCs cannot be peered
+  Subnets in external interconnected networks
+
+GCP Sandbox
+Playground > Cloud Sandboxes > Google Cloud Sandbox > Open Sandbox
+Open in Private browser window
+
+VPCs and Subnets
+gcloud compute networks create my-custom-network \
+    --subnet-mode=custom
+
+gcloud compute networks subnets create subnet-a \
+    --network=my-custom-network \
+    --region=us-central1 \
+    --range=10.1.2.0/24
+
+gcloud compute networks subnets create subnet-b \
+    --network=my-custom-network \
+    --range=10.128.1.0/24 \
+    --region=us-east1
+
+IP Addresses
+Internal Addresses
+Assigned from internal DHCP pool
+  Ephemeral remains even when stopped
+Can assign static internal address
+  Within assigned subnet range
+Internal DNS format (FQDN): INSTANCE-NAME.c.PROJECT-ID.INTERNAL
+
+External
+ Ephemeral - temporary
+   Assigned when resource created/running
+   REleased when stopped/deleted
+ Reservered (Static)
+   Bound to specific region
+  Billed when not attached to VM
+VM doesn't know external IP - mapped to internal IP
+No default public DNS, need to use DNS services like Cloud DNS
+
+Multiple Network Interface Controllers (NICs)
+Can be used to connect multiple VPCs
+Even on the same VM
+NICs cannot overlap subnet ranges
+
+Create two custom mode VPCs, each with a subnet in regions:
+gcloud compute networks create custom-network-1 \
+    --subnet-mode=custom
+
+gcloud compute networks subnets create subnet-a \
+    --network=custom-network-1 \
+    --region=us-central1 \
+    --range=10.1.2.0/24
+
+gcloud compute networks subnets create subnet-b \
+    --network=custom-network-1 \
+    --range=10.128.1.0/24 \
+    --region=us-east1
+
+gcloud compute networks create custom-network-2 \
+    --subnet-mode=custom
+
+gcloud compute networks subnets create subnet-c \
+    --network=custom-network-2 \
+    --region=us-central1 \
+    --range=10.2.2.0/24
+
+gcloud compute networks subnets create subnet-d \
+    --network=custom-network-2 \
+    --range=10.128.2.0/24 \
+    --region=us-east1
+
+Reserve two static external IP addresses in the region:
+gcloud compute addresses create east-address-1 --region=us-east1
+gcloud compute addresses create east-address-2 --region=us-east1
+
+Have to choose an IP that falls in subnet range
+Can't use reserved IP addresses
+Make sure subnet is in correct region, can't access out of region
+
+Firewalls
+Ingress blocked by default
+Egress allowed by default
+
+Lower priority number firewall rules take priority
+Priority 1 > priority 2 etc
+
+Allowing and denying subnets
+Firewall rule:
+ALlow port 22
+network tag - 'allow-ssh'
+Source filter: 10.2.1.0/24 (Only IP range allowed)
+
+gcloud compute networks subnets create subnet-a --network=custom-network --region=us-east1 --range=10.2.1.0/24
+
+gcloud compute networks subnets create subnet-b --network=custom-network --region=us-east1 --range=10.2.2.0/24
+
+gcloud compute instances create instance-1a --zone=us-east1-b --machine-type=f1-micro --subnet=subnet-a
+
+gcloud compute instances create instance-1b --zone=us-east1-b --machine-type=f1-micro --subnet=subnet-a
+
+gcloud compute instances create instance-1c --zone=us-east1-b --machine-type=f1-micro --subnet=subnet-a
+
+gcloud compute instances create instance-2 --zone=us-east1-b --machine-type=f1-micro --subnet=subnet-b
+
+Routing
+Subnet routes always have highest priority
+
+Delete default VPC:
+gcloud compute firewall-rules delete default-allow-icmp default-allow-internal default-allow-rdp default-allow-ssh
+
+gcloud compute networks delete default
+Create a VPC network to host your virtual machine instances for this scenario:
+gcloud compute networks create my-network \
+    --subnet-mode custom
+Create subnet for the us-central1 region:
+gcloud compute networks subnets create subnet-us-central1 \
+    --network my-network \
+    --region us-central1 \
+    --range 192.168.1.0/24
+Create subnet for the us-east1 region:
+gcloud compute networks subnets create subnet-us-east1 \
+    --network my-network \
+    --region us-east1 \
+    --range 192.168.2.0/24
+Create firewall rules to allow SSH connections in the new network you just created:
+gcloud compute firewall-rules create my-network-allow-ssh \
+--direction=INGRESS \
+--priority=1000 \
+--network=my-network \
+--action=ALLOW \
+--rules=tcp:22 \
+--source-ranges=0.0.0.0/0
+
+gcloud compute firewall-rules create my-network-allow-internal \
+    --direction=INGRESS \
+    --priority=1000 \
+    --network=my-network \
+    --action=ALLOW \
+    --rules=all \
+    --source-ranges=192.168.1.0/24,192.168.2.0/24
+Create a virtual machine to act as a NAT gateway on my-network:
+gcloud compute instances create nat-gateway --network my-network \
+    --subnet subnet-us-central1 \
+    --can-ip-forward \
+    --zone us-central1-a
+Create a new virtual machine without an external IP address:
+gcloud compute instances create private-instance \
+    --network my-network \
+    --subnet subnet-us-central1 \
+    --no-address \
+    --zone us-central1-a \
+    --tags no-ip
+Create a route to send traffic destined to the internet through your gateway instance:
+gcloud compute routes create nat-route \
+    --network my-network \
+    --destination-range 0.0.0.0/0 \
+    --next-hop-instance nat-gateway \
+    --next-hop-instance-zone us-central1-a \
+    --tags no-ip --priority 800
+Optional: Log in to your NAT gateway via SSH to configure iptables to NAT traffic to the internet.
+
+Note: These examples assume the interface is called eth0. Different Linux distributions use different names for interfaces. Modify the name of the interface in commands to match your distribution.
+
+On your NAT gateway instance, configure iptables:
+
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+The first sudo command tells the kernel you want to allow IP forwarding. The second sudo command masquerades packets received from internal instances as if they were sent from the NAT gateway instance.
+
+To inspect your iptables NAT rules, use the list option:
+
+sudo iptables -v -L -t nat
+Optional: If you want these settings to persist across future reboots:
+
+sudo echo "net.ipv4.ip_forward=1" > /etc/sysctl.d/20-natgw.conf
+sudo apt-get install iptables-persistent
+
+Creating a VPC Network with Curstom Mode Subnets
+Create VPC network
+Add subnet
+Place in region
+Give IP address range
+
+Create firewall rule
+VPC > Firewall rules
+Name it
+Select VPC
+Set traffic
+Set target, for Source IP ranges
+To allow all
+0.0.0.0/0
+Specify protocol
+Enter port to open (22)
+Create rule
+
+Create instance on subnet
+Compute Engine > VM Instance
+Make sure VM region is part of subnet region!
+Ensure Networking has VPC
+
+Working with Firewall rules in GCP
+VPC Network wide rule
+gcloud compute --project=PROJECT firewall-rules create RULE --direction=INGRESS/EGRESS --priority=1000 --network=custom-vpc --action=ALLOW --rules=tcp/dcp:PRT --source-ranges=IP/RANGE
+
+Targeted Firewall rule
+gcloud compute --project=PROJECT firewall-rules create NAME --direction=INGRESS/EGRESS --priority=1000 --network=custom=vpc --action=ALLOW/BLOCK --rules=icmp --source-ranges=IP/RANGE ==target=tages=NAMEOFRULE
+
+=== Securing your VPC Networks ===
+First video was an overview of IAM
+
+Multiple updates — edit entire policy
+Getting/downloading current policy is optional — you can always set a fresh policy without downloading the old policy first.
+
+Get (download) copy of policy:
+
+gcloud projects get-iam-policy [PROJECT_ID] --format [FORMAT] > [FILE-PATH]
+After editing the downloaded policy file, set the new policy by applying the edited one:
+
+gcloud projects set-iam-policy [PROJECT_ID] [POLICY_FILE]
+Directly add/remove a single IAM role with a single gcloud command (this does not affect other assigned roles in the project):
+
+gcloud projects add-iam-policy-binding [PROJECT-ID] --member user:[EMAIL] --role [ROLE_ID]
+
+gcloud projects remove-iam-policy-binding [PROJECT-ID] --member user:[EMAIL] --role [ROLE_ID]
+Note: For organization-level changes, swap out gcloud organizations for gcloud projects.
+
+Menu > Network Security > Cloud Armor
+Create Security policy
+Match IP
+Action
+Descript Priority
+
+== Google Cloud Identity and Access Management (IAM) Deep Dive ==
+=== IAM Big Picture ===
+Cloud IAM, used to grant granular access to resources
+Grant only the necessary access to resources
+
+Process of determining who can do what on which resources
+Who = member
+Role = What they can do
+Resource = On what can they do it
+
+Identity, account requesting access
+Roles/Resources - What the account is allowed to do
+
+Uses Google Admin Console
+
+=== Establishing Identity ===
+Who = Member = Identity
+Person or a service account
+Identity format = email address
+  Log in with email address
+People accounts authenticate ia Google account
+Service account = application/server acount
+  Not associated with a person
+  Also in email format, but no an actual email address
+
+Account creation
+People accounts - create and managed in Google Admin Console (for corporate domains)
+  Not part of GCP
+Service accounts are for applications created and managed in GCP
+
+People account types
+Personal
+  Non-gmail accounts associated with google account
+  Unmanaged account
+G suite/Cloud Identity Domain - primary section focus
+  Managed organization google accounts
+  Both types managed in Google Admin Console
+  Represents company internet domain name
+  Represents virtual group of all Google accounts in an organization
+  G Suite
+    Uses Compnay wide Google apps
+  Cloud Identity
+    No access to G Suite applications (Gmail, Drive, etc.)
+    Can sync existing directory service (e.g. Active Directory) to Cloud Identity
+  GCP IAM does not differentiate between G Suite and CLoud Identity accounts
+
+Google Group Collection of Google accounts
+  Also managed in Admin Console as well as legacy groups.google.com page
+  Also represented by email address (googlegroup@companyname.com)
+  Apply single policy to collection of users in group
+  No login credentials - not used to establish individual identity
+  Can include Service Accounts
+
+Special account types (varies by service)
+  allAuthenticatedUsers
+    Special identitfier to represent any Google account
+    Anonymouse visitors not included
+  AllUsers (i.e., public)
+    Another special identifier
+    Anyone and everyone
+  Both types managed in GCP
+  Not represented as an email account
+
+CLoud Identity/G Suite
+What is it Identity domain to establish Google managed organization accounts for GCP
+and much more
+G Suite vs Cloud Identity
+  G Suite licenses for organization Google apps include Gmail, Drive, etc
+  Cloud Identity, Google identity only, no Google apps
+  Both account types created and managed from same Google Admin Console (admin.google.com)
+  Reminder, GCP does note care if an account is G Suite or Cloud Identity,
+  they're just Google accounts
+
+Cloud Identity Free vs. Premium
+Difference not relevant for working with IAM on GCP
+Free provides core identity and management services
+Premium adds enterprise security, application management, and device managed services
+  Premium not covered
+
+Cloud Identity - Hands on
+admin.google.com
+Add user
+New identity
+To enable cloud identities
+Menu -> billing
+Enable Cloud Identity Free
+
+Create users with Cloud identity enabled
+Add new user
+Billing -> Switch autolicense off or on
+
+Synchronize Cloud Identity with Active Directory
+G Suite users: Created and amanged in Google Admin Console as the primary directory
+Non-G Suite: Typically Active Direcotry for Microsoft organizations
+Problem
+  Many organizations use AD for hte user management source but need to maintain
+  Google accounts with Cloud Identity for GCP access
+  Two directory systems to maintain
+Solution
+  Automatically synchronize AD to CLoud Identity
+    Create, update and manage users (including passwords) in AD
+  Changes automatically reflected
+AD remains primary source, Cloud ID
+Mapping = Federation
+AD is single source of truth
+One way sync from AD to CLoud Identity
+
+How to synchronize - tools
+Google Cloud DIrectory Sync (GCDS)
+  Google provided tool for synchronization process
+  Runs on AD server
+Active Directory Federation Services (ADFS)
+  Microsoft-provided tool
+
+Google Groups
+Group user accounts for easy management
+Managed in admin console or groups.google.com
+Add a group to an IAM role, permissions applied to all users in group
+
+Google Admin console
+groups
+Create group
+Group settings
+
+legacy
+business groups
+
+Configure multi-factor authentication
+Follow the prompts
+
+Working with folders
+Cloud IAM grouping mechanism
+
+OS LOgin
+cannot create/update/delete instances
+enable-oslogin:TRUE
+
+=== Granting Access to GCP Resources with Cloud IAM ===
+GCP Resource hierarchy
+Based on Linux file system idea
+parent/child relationship
+permissions are inheirited from top down (root is top)
+Organization = root
+Folders = groups
+Projects core components
+Resources GP services etc.
+
+Roles and Resources
+roles and permissions
+what is a resources?
+who, can do what, on which resource = IAM Policy
+
+Primitive roles:
+Owner: Full control
+Editor: Same as owner, cannot access IAM or billing access
+Viewer: View rights onle. Cannot edit anything in the project.
+Predefined Role:
+Predefined group of permissions
+
+Custom Role: Mix and match permissions
+Resource: Everything in Google Cloud
+
+IAM Policy heirarchy
+Organization -> Folder -> Project -> Resource
+
+IAM Navigation and Orgination Node
+console.cloud.google.com
+
+Select a project
+
+IAM Roles
+
+Managine IAM Policies using CLI
+
+Method 1: Overwrite existing policy
+
+Get (download a copy of the policy)
+gcloud projects get-iam-policy PROJECT_ID --format FORMAT > FILE-PATH
+JSON or YAML format
+
+Set new policy by applying an edited one
+gcloud projects set-iam-policy PROEJCT_ID FILEPATH
+
+Directly add/remove a single IAM role:
+gcloud projects add-iam-policy-binding PROJECT_ID --member user:EMAIL --role ROLE_ID
+gcloud projects remove-iam-policy-binding PROJECT_ID --member user:EMAIL --role ROLE_ID
+
+Method 2: Editing existing policy
+gcloud organizations get-iam-policy ORGANIZATION_ID
+gcloud resource-manager folder get-iam-policy FOLDER_ID
+
+Hands-On with IAM and the Command Line
+Edit downloaded file with vim
+- members
+ - user:user@gmail.com
+ role: roles/role
+
+Replace existing policy
+
+Look for role under IAM & admin -> Roles
+
+Troubleshooting IAM Roles
+Menu -> IAM -> Policy Troubleshooter
+Enter email
+Resource, supply full API path
+Full resource names is helpful
+If you know name of primative or pre-defined, use find to search for it
+
+Report lists existing roles
+Shows problem
+
+Reverse scenario, user has access to item they shouldn't
+Same idea, copy API path and pre-defined permission
+
+Create and Manage IAM Roles on Google Cloud
+Menu -> IAM & Admin -> IAM
+Create user
+Select a pre-defined role
+
+Create and assign a custom role
+Roles
+Create role
+Title
+ID
+Launch stage
+Add Permissions
+Filter table
+keyword firewall
+Select correct roles and add
+Create role
+
+Assign role in IAM
+Edit user permissions
+Add another role
+Search for custom role
+Save
+
+Custom role with both
+Roles
+Filter table
+Select two of them
+Create role from selection
+Edit permissions for user
+Remove old role and replace exiting role with new custom role
+
+=== Service Accounts ===
+Service account account assigned to app/service or VM
+Not attached to user
+Don't require user authentication, uses a service account key
+Identity represented by email address
+User and Google managed service accounts
+
+Created by either Google or User
+End user is responsible for IAM roles/scopes
+
+Google managed created by Google
+IAM roles automatically controled by Google
+Invisible to user, leave it alone
+
+Service accounts are both a member (the who) and a resource
+
+Creating and managing Service Accounts
+
+Menu -> IAM -> Service Accounts
+
+Create a service account:
+gcloud iam service-accounts create (account_name) --description "(description)" --display-name "(display name)"
+
+Show service accounts in a project:
+gcloud iam service-accounts list
+
+Rename service account display name/description (cannot change address):
+gcloud iam service-accounts update (SA-NAME)@(PROJECT-ID).iam.gserviceaccount.com --description "(UPDATED-SA-DESCRIPTION)" --display-name "(UPDATED-DISPLAY-NAME)"
+
+Disable/enable service the account:
+gcloud iam service-accounts (disable/enable) (SA-NAME)@(PROJECT-ID).iam.gserviceaccount.com
+
+Delete the service account:
+gcloud iam service-accounts delete (SA-NAME)@(PROJECT-ID).iam.gserviceaccount.com
+
+Add an IAM binding:
+gcloud projects add-iam-policy-binding (PROJECT-ID) --member serviceAccount:(SA-NAME)@(PROJECT-ID).iam.gserviceaccount.com --role (ROLE)
+
+Deactivate instance to alter service account
+
+Create a key:
+gcloud iam service-accounts keys create /(PATH)/(FILENAME).json --iam-account (SERVICE_ACCOUNT)
+
+List keys per service account:
+gcloud iam service-accounts keys list --iam-account (SERVICE_ACCOUNT)
+
+Delete the service account key (requires key ID):
+gcloud iam service-accounts keys delete (KEY-ID) --iam-account (SERVICE_ACCOUNT)
+
+gsutil ls gs://path
+gcloud config list
+gsutil cp file gs://path
+
+gcloud config list
+gsutil ls gs://bucket
+Set IAM scope
+
+=== IAM on CLoud Storage ===
+IAM roles and Access Control Lists (ACLs)
+Both methods are independent and not reliant on each other
+Either/or
+IAM granted at project/bucket level, not object
+ACL granted at bucket/object level, not project
+Google recommends IAM over ACL, of course
+
+IAM roles with gsutil:
+
+https://cloud.google.com/storage/docs/gsutil/commands/iam
+
+ACLs with gsutil:
+
+https://cloud.google.com/storage/docs/gsutil/commands/acl
+
+Assign IAM roles to buckets:
+gsutil iam ch user:(user_email):(role1,role2) gs://(BUCKET)
+
+Remove IAM role from the bucket:
+gsutil iam ch -d user:(user_email):(role1,role2) gs://(BUCKET)
+
+Remove all roles from the bucket for a given user:
+gsutil iam ch -d user:(user_email) gs://(BUCKET)
+
+Give public read access to the bucket:
+gsutil iam ch allUsers:objectViewer gs://(BUCKET)
+
+Assign ACL roles to buckets and object:
+gsutil acl ch -u (user_email):(O/R/W) gs://(BUCKET)/(OBJECT)
+
+Delete ACLs for a user:
+gsutil acl ch -d (user_email) gs://(BUCKET)/(OBJECT)
+
+Set default ACL for all new objects (in this case, public read access):
+gsutil defacl ch -u AllUsers:R gs://(BUCKET)
+
+Create a service account:
+gcloud iam service-accounts create signed-url-agent --display-name "Signed URL Service Account Agent"
+
+Create a user-managed key for the service account:
+gcloud iam service-accounts keys create keyfile.json --iam-account (SERVICE_ACCOUNT)
+
+Grant Storage Object Viewer IAM role to the service account:
+gcloud projects add-iam-policy-binding (PROJECT_ID) --member serviceAccount:(SERVICE_ACCOUNT) --role roles/storage.objectViewer
+
+Generate signed URL on the object to grant timed access:
+gsutil signurl -d 1m keyfile.json gs://(BUCKET)/(OBJECT)
+
+May need to install pyOpenSSL library:
+sudo pip install pyopenssl
+
+Creating and Managing GCP Storage Bucket Roles and ACLs
+Menu -> Storage -> Browser
+
+Cloud shell create buckets
+gsutil mb gs://BUCKETNAME
+
+Get all files from gucket and put into file
+gsutil -m cp -r FOLDER/* gs://BUCKET
+
+Dot menu edit permissions
+Add item
+Change entity to user
+NAME: allUsers
+Access: Reader
+
+https://cloud.google.com/iam/docs/conditions-overviewo
+
+CEL expressions
+(resource.type == "compute.googleapis.com/Disk" &&
+resource.name.startsWith("projects/(PROJECT_ID)/regions/us-central1/disks/devAccess")) ||
+(resource.type == "compute.googleapis.com/Instance" &&
+resource.name.startsWith("projects/(PROJECT_ID)/zones/us-central1-a/instances/devAccess")) ||
+(resource.type != "compute.googleapis.com/Disk" &&
+resource.type != "compute.googleapis.com/Instance")
+
+=== Protecting Resources ===
+IAM Auditing and Logging
+Stackdriver Logging
+Activity filed built into web dashboard
+GCP Activity
+
+Stackdriver logging
+Logs Viewer
+Logs-based Metrics
+Logs Router
+Resource usage
+Granularity includes Buckets, projects, instances
+BigQuery and Pub/Sub also part of IAM Auditing/Logging
+Won't show you what was changed, only what current policy is
+
+Stackdriver advanced search
+Cloud storage uses setiam.permissions instead of setiam.policy
+Advanced pulls in all logs with phrase, sort of like locate | cat | grep
+
+Security Command Center
+Organiation level Security Ovreview
+IAM-related alerts
+  Public CLoud Storage buckets
+  Non-organization IAM members
+
+Two features + Security Health Analytics
+Health analytics dashboard, shows potential weak spots
+
+== Google Cloud Essentials ==
+
+Getting Started
+Compute, compute engine
+Bigdata, data processing
+Networking, aspect of Google Cloud for VPNs and such
+Cloud AI, Machine Learning
+Cloud iot core, intro to Internet of Things
+
+Google Cloud Essentials chart
+
+=== Compute ===
+App Engine
+Compute Engine
+Kubernetes Engine
+Cloud Functions
+
+=== Identity & Security ===
+Cloud IAM
+Cloud Identity
+
+=== Storage & Databases ===
+Cloud Storage
+Cloud Datastore
+Cloud SQL
+Cloud Bigtable
+
+=== Big Data ===
+Big Query
+Cloud Dataflow
+Cloud Dataproc
+Cloud Pub/Sub
+
+=== Networking ===
+Cloud Load Balancing
+Cloud VPC
+Cloud CDN
+
+=== Cutting Edge ===
+Cloud AI
+Cloud IoT Core
+Data Transfer
+
+Finding Google in the Cloud
+remote servers connected via internet
+Cloud computing advantages
+Global presence, no capital investment, pay as you go pricing
+No installation setup or maintenance cost
+Scalability, elasticity (ability to scale up or down)
+fault tolerance, don't lose data when machine dies
+Cloud servers use other servers for backup, often in other locations
+Cloud servers act as a common middle ground where all devices can store/access files
+
+Examining Google Cloud's Global Infrastructure
+Custom servers
+Zero carbon footprint since 2007, wind/solar
+Recycled water based cooling system
+Data is chunked and distributed across systems
+
+What Google Cloud can do for you
+App Engine front end
+Compute Engine for back end
+Both communicate with Database services
+Data Storage, Cloud Database and CLoud SQL
+
+Kubernetes for additional backend support, use Docker containers
+Cloud functions, serverless component
+
+Cloud IAM, Identity and Access Management
+Proper authorization management
+Allow access to correct user type
+
+Cloud SQL handles relational database issues
+Cloud datastore for simple name/value pairs
+Cloud Storage, putting/retriveing objects such as documents
+
+Bigtable = NoSQL database
+
+Cloud VPC (Virtual Private Cloud) global service
+All staff can gain access as through they were on a private network.
+
+Cloud CDM for hosting videoes
+Bigquery = Standard SQL queries output realtime analysis
+
+Cloud Pub/Sub = Publication/Subscription
+Designed to stream to/from app
+Deliver to Bigquery for immediate analysis
+
+Cloud AI for Machine Learning
+Analyzing patterns and guessing what services will need scaled
+
+Cloud IOT, communicates between app and devices
+
+=== Google Cloud Concepts ===
+Storage, computing (processing and app hosting), and databases
+Analytics, Security, Developer tools
+Machine Learning/AI
+
+Fault tolerant: Loss of a machine does not result in loss of data
+High Availability: Data is always available
+Scalability and Elasticity: Cloud services allows automatic growth or shrinking as needed
+Compute Engine is like a computer
+Instance is a VM
+Common use for Compute Engine = hosting applications
+
+VPC, Virtual Private Cloud, includes Compute Engine and Cloud SQL database
+Has a private internal connection
+Own private network
+Allow/restrict access to them
+Cloud Storage is outside of VPC
+
+Automatic scaling with cloud
+Temporary redirection to valid server, remove borked server and replace with working
+server
+
+Cloud storage acts as an unlimited storage bucket
+
+Unmanaged service = user manages server tasks (updates etc.)
+Managed services = Google manages server tasks (updates etc.)
+Cloud SQL - Database server example
+Google manages
+OS installation patches updates and storage
+User manages
+loading data, accessing data, using data
+
+number in pin, number of zones in region
+GCP Region us-west1
+us-west1 a, b and c
+
+Zones = Isolated Data Center
+Region = Geographic Group of zones
+Regions = High Availability
+Zones = Fault Tolerance
+
+=== Working With Google Cloud ===
+How to sign up for Google Cloud
+cloud.google.com
+Try It Free button
+Sign up for free trial
+Access to all products
+$300 credit for 12 months
+No autocharge after free trial ends
+Country
+Acceptances for updates (optional)
+Agree to terms and services
+Choose business type Business/Individual
+Name/Address
+Choose payment method
+
+Google Clouds Primary unified interface, google console
+Choose project from dropdown
+Need to have a project before accessing
+Cards can be removed from dashboard
+Organize dashboard with Customize button
+Activity shows timeline of project
+
+Cloud launcher, Google Cloud's marketplace for packages such as WordPress
+OS's and Content management systems such as WordPress
+
+Billing, all billing is handled on pay as you go basis
+No monthly fees, upfront or termination fees
+
+APIs and services
+Shows all currently enabled
+
+Stackdriver
+Google Clouds integrated monitoring logging and diagnostic service
+Encompasses all of google cloud
+included metrics and performance
+Does require sign up for a separate account
+Access to all logs
+Works with AWS
+Upgrade from basic to premium to do this
+
+Cloud shell gives you full access to your projects
+5GB of persistant storage from session to session
+Developer tools are built in for Python, PHP, Node JS, Ruby
+
+Google Cloud commands
+gcloud projects list, show all projects
+Can even configure a kubernetes cluster
+Code editor
+
+SSH from the browser
+
+=== Running Apps with Compute ===
+==== App Engine ====
+App Engine is straightforward, code centric and automatically scales
+PaaS, Platform as a Service
+Most highly managed, no server setup or provisioning
+Can't customize it the way you can compute engine
+Auto scaling and load balancing
+Great for websites, mobile app and line of business apps
+One of original four services
+Biggest change
+Two environments
+Standard and flexible
+Standard: Earlier implementation, proprietary, limited language/access (Python 2 only), faster, cheaper
+Flexible: Standardized on Docker, broader language/version use, slower, more expensive
+
+App engine GCP
+First, choose a language
+Second, choose a region. Faster users in and around chosen region
+Once you choose a region you can't change it
+Choose region closest to biggest market base
+Download the Google Cloud SDK for chosen language
+Standard and Flexible environments
+App engine has access to cloud database, cloud SQL and cloud storage
+Services
+default, click on external link to open up web browser
+Multiple services running different parts of the app.
+Can't call code from one service in another
+Can interact using REST or HTTP calls
+Can split traffic for testing or controlled rollout
+Can merge back in
+Instances, primarily a diagnostic page
+Security scans check for vulnerability
+Configure access vi IP address
+Quotas monitor usage for app engine usage
+API basis to make sure no one hogs
+Referred to as safety limit
+Also have spending limit
+blob store, legacy aspect of app engine
+Used to store files
+Search to look for indexed data
+Settings to end an application
+App settings also show if you set up default cloud storage bucket
+Ability to stop anyone from downloading code
+Establish an ID aware proxy
+Custom domain, domains for app
+Set up SSL certs
+enable additional email addresses
+
+==== Compute Engine ====
+App engine is the easiest pathway into cloud computing
+Compute engine is more flexible
+Google cloud's flagship service
+IaaS - Infrastructure as a Service
+Scalable VMs
+Completely customizable configurations
+public or private disk images
+Works with containers
+VPN/VPC support
+Default and custom firewalls
+Complete routing support
+VMs are at the heart of compute engine.
+setting up a VM
+Add a name
+Choose a zone
+Can transfer from zone, or region
+Choose machine type
+Optionally choose a container
+Configure boot disk, can change
+Configure identity and API access
+Access scope (defualt, full access to all Cloud APIs, set access for each API)
+Firewall (Allow HTTP/HTTPS traffic)
+Managment options, start up script
+metadata
+availability policy
+Handling disks
+Networking and SSH keys
+REST request
+
+Two instance groups, managed and unmanaged
+
+unamanged groups are instances with different configurations
+load balancing to existing server configurations
+Don't get auto-scaling can't update support on rolling basis
+Can't use instance templates.
+
+Managed instances identical machines
+managed as a single unit
+automatically scale, load balancing built in
+Managed instance group re-creates instance if it crashes
+Can be zonal or regional
+Have instaces from different zone but in the same region
+Create an instance template.
+Instance template is a global resource
+Disks are remote from server
+If you need optimal latency, choose a local SSD
+attached directly to server
+Snapshots are available
+TPU = Tensor processing unit
+Computing hardware for accelerating workload
+Google offers committed use discounts
+Get contract discount
+Health check
+Contacts instance and waits for response
+Zones, check what's in what zone
+Settings
+set up daily usage report
+complete license verification report
+vm verification instance
+network connections
+Integrates with load balancing and VPC.
+
+==== Standardizing on Kubernetes Engine ====
+PaaS app engine, fast to deploy requires management
+IaaS compute engine, customizable
+Kubernetes, standardized but configurable
+Managed orchedstrated environment for containerized applications
+Uses Compute Engine instances to form cluster
+Relies on open sources Kubernetes cluster management system
+Currently only Docker containers are supported
+Benefits:
+Load balancing integrated
+Node pools supported
+Automatic cluster and node scaling
+Automatic upgrades
+Automatic repair based on health reports
+Automatic logging and monitoring with Stackdriver
+Main category is clusters
+Nodes compute engine instances
+Containerized applications are stored in pods
+All traffice orchestrated by traffic controller
+Store docker image in Container registry
+
+==== Cloud Functions ====
+Primary serverless entry
+SErverless environment for executing code and connecting cloud services
+Fully managed: zero infrastructure or management requirements
+JavaScript functions in a Node.js wrapper
+Triggers:
+  Http request
+  Cloud storage event
+  pub/sub event
+use cases:
+Webhooks - Respond to any HTTP request
+Data & Image processing - Validate/transform data or manipulate images
+Mobile back end - React to storage, authentication or data events
+Internet of things (IoT) - Respond to Pub/Sub messages from devices
+Cloud Functions console
+Enable API, one click button
+Create new function
+name
+select memory allocated
+Stackdriver support built into cloud functions
+
+==== Hands on Lab: Deploying an App Engine Application ====
+Private browser window better for GCP console
+
+Deploy an app to Cloud App
+NoSQL storage
+Menu -> API & Services -> Library
+Enable/Manage API
+
+Create bucket for Cloud Storage
+gsutil (Google Storage Utility)
+mb (Make Bucket)
+-c (Storage class)
+regional (Regional Storage class)
+-l (location/zone)
+us-east1 (zone)
+gs://la-mg-123 (bucket name, must be unique)
+gs:// bucket prefix
+
+Add roles to make item viewable
+gsutil
+iam (Changing iam permissions)
+ch  (Change)
+allUsers:objectViewer (Name:role of user to add)
+gs://la-mg-123 (Name of bucket)
+
+Verify that it's working
+Go to cloud storage
+Menu -> Storage -> Browser
+
+Clone github repo (you know how to do this)
+
+Pencil, launch code editor
+config.py
+change Project_ID to yellow project ID
+change Cloud_Storage_Bucket to project bucket name
+
+gcloud app deploy (Deploy app)
+gcloud app browse (Detect browser)
+
+==== Hands on Lab: Trigginag a Cloud Function with Coud Pub/Sub ====
+Cloud functions can be triggered in two ways,
+http request or background service like pub/sub
+Ensure APIs are enabled: pub/sub and functions (cloud functions)
+Sometimes you can ignore the credentials warning
+
+Create pubsub topic
+Big Data -> Pub/Sub -> Topics
+Name topic
+Placed within project
+Check the trigger (http, cloud pub/sub etc)
+Source code
+Select language
+publish the message
+cloud functions
+view logs
+Run from command line
+DATE= $ (printf'my friends' |base 64)
+
+Trigger function from CLI
+gcloud
+functions
+call
+la-pubsub-function (Name of function to call)
+--data '{"data":"'$DATA'"}' (JSON data variable to pull from)
+
+gcloud command to publish to a topic directly
+glcloud pubsub topics publish
+greetings (Name of topic)
+--message "y'all" (Message to publish)
+
+==== Hands on Lab: Working with Compute Engine Windows Instances ====
+Set up IIS server
+Choose specific disk image
+Firewall allow http access
+External IP link to view homepage
+
+Compute Engine -> VM instances -> Create
+New VM instance
+Change boot disk to Windows Server 2019 Datacenter
+Server with desktop experience
+
+Set Windows Password
+RDP to server
+Start -> Windows Powershell -> More -> Run as admin
+
+Set up IIS
+import-module servermanager
+add-windowsfeature web-server -includeallsubfeature
+echo '<!doctype html><html><body><h1>Greetings</h1></body></html>' > C:\inetpub\wwwroot\index.html
+
+Click on external IP since HTTP traffice is allowed
+
+=== Safeguarding Identity and Security ===
+==== Setting Cloud Identity ====
+Cloud Identity is part of IAM, unified access management system
+Identity as a service - IDaaS
+Originally G-Suite based with separate Google Admin
+Integrated into Google Cloud
+Manage resources hierarchically
+Assign Unmanaged accounts to project
+Allow single sign on
+
+Hierarchy Organization -> Folders -> Project -> Resources
+Policy inheritance ->
+Flows down hierarchy
+Permissions for organization
+
+==== Authorizing with Cloud IAM ====
+Identity and Access Management
+Fundamentals
+Unified resource access management system
+For both users and services
+3 main components: policies, roles, resources
+Policy: Who can do what on which resources
+Roles: List of permissions assigned to identites/members
+Identities:
+  Google Account (managed account), unmanaged account
+  Service Account
+  Google Group, G-Suite Domain ,Cloud Identity Domain
+Resources:
+  Projects and folders
+  Cloud services (Compute Engine, Cloud Storage, Pub/Sub, etc.)
+  Aspects of those servicse (instances, buckets, topics, etc.)
+
+Identity
+  Google Account
+  Service Account
+  Google Group
+Role
+  Owner
+  Viewer
+  Editor
+  compute.instanceAdmin
+  storage.objectAdmin
+Resource
+  Cloud Platform
+  Projects
+  Compute Engine
+  App Engine
+  Cloud Storage
+  Cloud Logging
+
+Primatives, on the right. Simple rules
+Detailed rules on the right
+Can be configured using Cloud console, API or CLI
+
+==== Examining Other Identity and Security Services ====
+Cloud KMS Fundamentals
+Cryptographic key management system
+keys are used to encrypt/decrypt files
+Hierarchical
+  Project > Location > Keyring > Key > Key version
+Cloud KMS is a project based resource
+Specify locations
+  Regional, Multi-regional, or Global
+Key ring is a collection of keys in a specified location for a specific project
+Individual keys inherit permissions from key ring
+Different key berions have different encryption/decryption values
+Key version states: Enabled, Disabled, scheduled for destruction, destroyed
+Key versions can be rotated regulrarly and automatically or manually
+
+Security -> Cryptographic keys
+Key ring
+
+KMS used to manage encryption/decryption
+IAP used to provide app level access control
+
+=== Managing Storage and Database ===
+==== Preserving Objects in Cloud Storage ====
+Cloud Storage Fundamentals
+Binary large object (BLOB) storage
+Images, videos, audio files, documents, static websites, etc.
+Automatic data encryption at rest and decryption on delivery
+Primary container: buckets
+  Project-based
+  Globally unique ID
+  Specific location
+  Set class for optimum price/performance
+    Multi-regional - highest availability, most frequently accessed
+    Regional - routinely accessed, best for analytics
+    Nearline - infrequently accessed, used for archival and data backup
+    Coldline - least accessed, lowest cost, typically for disaster recovery
+
+Menu -> Storage -> Browser
+
+Create bucket
+Use your domain as the bucket name
+Recognizes periods as domain names
+Different regions have different locations available
+
+Buckets also supports folders
+gsutil short for Google Storage Utility
+
+==== Non-Relational Data Management with Cloud Datastores ====
+Cloud Datastore Fundamentals
+NoSQL document database for semi-structured data
+Key features:
+  ACID transactions (Atomicity, consistency, isolation, durability)
+  Highly available and scalable
+  Multipl access options, Console, JSON API, open source clients
+  SQL-like language GQL (Graphic Query Language)
+Structure - similar to traditional, but more flexible (schemaless):
+  Kinds - like tables
+  Entity - like row, but can have different properties
+  Property - like field, but multiple properties possible
+  Key - like primary index
+  Supports optional ancestors and children
+Uses product catalogs, user profiles, ACID transactions, etc.
+
+Menu -> Storage -> Datastore
+Edit entity, Create property
+New entries will include added properties
+GQL uses MySQL-like syntax
+
+==== Handling Relational Data via Cloud SQL ====
+Cloud SQL Fundamentals
+FUlly managed relational database service
+Supposts PostgreSQL 9.6
+Supports MySQL 5.5, 5.6. or 5.7
+Robust scalability
+Automatic replication and backup
+Configurable SQL instances
+Data automatically encrypted
+Default firewalls for each instance
+Full integration with Google Cloud Services
+
+Database can be configured like a VM instance.
+
+==== NoSQL Management with Cloud Bigtable ====
+Cloud Bigtable FUndamentals
+Fully managed, massively scalable NoSQL database service for big data
+Used for Gmail, Google Search, Maps & Analytics
+Also used by by Ebay and Spotify
+Differences between Cloud Database
+  Wide column database vs document database
+  No SQL-like language available (No GQL)
+  Silge key per row
+Can hold several hundred petabytes of information
+Columns wide enough for entire web pages or sateellite imagery
+Consistent low latency and high throughput
+Dynamically change cluster size without stopping/restarting
+Use cases: graph data, financial data, IoT data, marketing data, etc.
+
+Cloud shell
+Menu -> Activate google cloud shell
+Make sure gcloud up to date
+gloud components update
+install CBT commands
+sudo gcloud component install cbt
+
+Use cbt to work with project and instance
+cbt.rc file
+echo project = ID_OF_ROJECT > /.cbtrc
+echo instance - ID_OF_PROJECT-cbt >> /.cbtrc
+
+create a table
+cbt createtable tablename
+cbt ls
+Shows tables
+
+Data organized into column families
+
+cbt createfamily TABLE FAMILYNAME
+
+cbt set TABLE r1 FAMILY:c1=RELATION
+Each cell can contain multiple versions of a value
+
+cbt read TABLE
+row
+  column family:column
+    Data
+
+==== Exploring Additional Data Services ====
+
+Two other services
+Cloud Spanner
+Cloud Memory store
+
+Cloud Spanner Fundamentals
+Fully managed, enterprise-grade, relational database service
+Is to Cloud SQL as Cloud Bigtable is to Cloud Datastore
+Scales horizontally like NoSQL databases
+High availability with strong consistency
+Industry standard SQL support
+Supports data definition language (DDL)
+Client libraries C#, Go, Java, Node.js, PHP, Python and Ruby
+Full console support
+Use cases, call center,s financial trading, telecom, transportation, etc.
+
+Supports Tables and queries
+
+Cloud Memorystore Fundamentals
+Fully managed, in-memory datastore service
+Redis protocol compatible
+Sub-millisecond latency
+As-needed scaling, up to 4300 GB instance
+Connect with App Engine, Compute Engine, or Kubernetes Engine
+Service tiers:
+  Basic - default for basic caching
+  Standard - for highly available Redis instance
+Use cases: caching layer in gaming and analytical pipelines, stream processing
+
+Menu -> Storage -> Memorystore
+
+==== Hands On Lab: Setting Cloud Storage Lifecycle Rules ====
+Lifecycles automatically adjust availability to lower costs
+Menu -> Storage -> Browser
+Create bucket
+Lifecycle defaults to None
+Click link
+Add rule
+Set object conditions (Age in this case)
+180 days
+Storage class
+Regional/standard
+
+Choose action, set to Nearline
+Save
+
+Repeat to move from Nearline -> Coldline
+
+Do on CLI:
+Start cloud shell
+Get lifecycle rules
+gsutil lifecycle get gs://NAME OF BUCKET
+
+Set up a particular rule
+Bring in repo, clones in repo
+gsutil lifecycle set NAMEOFFILE.json gs://NAMEOFBUCKET
+
+==== Hands On Lab: Managing Google Cloud SQL Instances ====
+Working with Cloud SQL requires working with multiple instances
+
+Creating instance
+Menu -> Storage -> SQL
+Create instance
+Choose database language
+Set name, root password, region/zone
+Create
+
+Creating database
+Click on instance
+Click on database
+Create Database
+Name database
+sql_Name
+
+Clone instance
+Dropdown -> Create Clone
+Clone either earlier or current state of instance
+
+Click instance to find start/stop option, just like VM instances
+Same with restarting and deleting instances
+
+==== Hands On Lab: Exploring Cloud Firestore in Datastore Mode ====
+Menu -> API
+Datastore
+Enable
+
+Menu -> Storage -> Datastore
+Select Datastore mode
+Location is permanent
+
+Create entity
+Select namespace, kind, ke identifiet
+Add property
+Name, type, value and if it's indexed
+
+Query with GQL
+
+==== Hands On Lab: Connecting to Cloud Bigtable with cbt ====
+Menu -> APIs -> Library
+Search for bigtable, Choose the Cloud Bigtable Admin API
+Create instance
+
+Set name, type, storage type, region and zone
+
+Go to cloud shell
+Make sure gcloud components are updated
+Makde sure cbt is installed
+gcloud components install cbt
+
+Configure cbt using project and instance
+echo project=PROJECTID >> ~/.cbtrc
+echo instance=INSTANCE-NAME >> ~/.cbtrc
+
+cbt createtable TABLENAME
+cbt createfamily TABLENAME COLUMNFAMILY
+
+Create column qualifier, row1 cell1
+cbt set TABLENAME r1 COLUMNFAMILY:c1=data
+cbt read TABLENAME
+
+Add second column qualifier
+cbt set TABLE r1 COLUMNFAMILY:c2=data
+
+=== Handling Big Data ===
+==== Warehousing Data with BigQuery ====
+Google BigQuery Fundamentals
+Fully managed data warehouse for big data
+Near real-time interactive analysis of massive datasets
+Analyze terabytes of data in seconds
+Standard SQL supported
+Storage and computing handled and billed separately
+Query public or commercial dataset with your own
+External services queries: Cloud Storage, CLoud Bigtable & Google Drive
+Automatic data replication
+Modify data with Data Definition Language (DDL)
+Use cases: real-time inventory, predictive digital marketing, analytical events
+
+Menu -> Big Data -> BigQuery
+Create Dataset
+ID, location, optional expiration date
+Set up schema manually
+
+==== Processing Data with Cloud Dataflow ====
+Two pipelines, Cloud Dataflows
+
+Real time analysis of incoming data
+Handles data from Pub/Sub
+
+Cloud Dataflow Fundamentals
+Fully managed service for creating pipelines to process data
+Based on Apache Beam
+Processes data on multiple machines in parallel
+Handles both streaming (live) and batch (archived) dat
+No instances or clusters to establish (serverless)
+Easy replication of servicse with templates:
+  No need to recompile code before processing pipeline
+  Execute pipeline without dev environment and it's dependencies
+  Can customize with template parameters
+  Can be executed via the console or gcloud command
+Best option if no current implentation with Apache Hadoop or Spark
+Use cases: analytical dashboards, forecasting sales trends, ELT operations
+
+==== Coordinatinug Clusters with Cloud Dataproc ====
+Several distinctions between proc and flow
+Rooted in Apache Hadoop and runs in clusters
+
+Dataproc Fundamentals
+Fully managed cluster data processing service
+Compatible with Apache Hadoop, Spark and Hive
+Fast cluster creation, 90 seconds vs 5 - 30 minutes
+Can scale clusters up and down without stoppin the job
+Can switch to different versions of Hadoop, Spark and others
+Workflow templates recently added
+  Create template, add job, and instantiate template
+    Workflow 1: Creates clust, runs jobs, and deletes cluster
+    Workflow 2: Works with existing cluster and runs jobs
+
+Similar to Cloud Dataflow
+  Both data process
+  Both handle bach and streaming data
+
+Deciding between the two
+Starting from scratch or is something already running?
+If yes, Dataproc
+Do you favor a hands-on devops or hands off?
+on, dataproc
+off, dataflow
+Alter cluster settings like VM Instances
+Job submission
+job id
+region
+cluster
+job type
+main class/jar
+arguments
+jar files
+
+==== Messaging through Pub/Sub ====
+Cloud Pub/Sub like old phone operators
+
+Fully managed messaging middleware service
+Allows secure nad highly available messages between independent apps
+Works with both GOogle Cloud and external servicces
+Full range of communication:
+  One to many
+  Many to one
+  Many to many
+Both push and pull options
+Messages encrypted and HIPAA compliant
+Use cases: streaming data, event notifications, asynchronous workflows, etc
+
+Cloud pub/sub can pull from cloud logs, api, dataflow, storage, and compute engine
+Cloud pub/sub can send to Cloud networking, dataflow, monitoring, App and compute engine
+Create topic
+Select new subscription
+
+gcloud pubsub subscriptoins pull SUBSCRIPTION
+
+==== Examining more Big Data Services ====
+
+Cloud datalab and datastudio
+
+Cloud datalab fundamentals
+Interactive data analysis and machine learning environment
+Packaged as a container and runs in a VM instance
+Basedon Jupyter notebooks
+Notebooks:
+  Contain code, docs in markdown and code results
+  Code results can be text, image, Javascript or HTML
+  Can be shared with team members
+  Collection of cells containing code or markdown
+
+datalab create DATALAB
+datalab connect --zone ZONE --port PORT DATALAB
+Preview on port to view cloud datalab
+
+Cloud Data Studio Fundamentals
+Interactive repor and big data bisualizer
+Creates dashboards, charts, and tables
+Connects to CLoud BigQuery, Cloud Spanner, Cloud SQL and CLoud Storage
+Stores shareable files on Google Drive
+Basic process is three steps
+  Connect to data source
+  Visualize data in report
+  Share report
+
+==== Hands On Lab: Handling Streaming Messages with Cloud Pub/Sub ====
+
+Menu -> BigData -> Cloud PUb/Sub
+Create a topic
+Create subscription
+Name subscription
+Delivery type set to pull
+Enable retention of acknowledge messages
+
+Cloud shell
+gsutil cp gs://path/to/bucket .
+Change TOPIC to named topic
+authenticate shell
+gcloud auth application-default login
+
+Install Google cloud
+sudo pip install -U google-cloud-pubsub
+
+Pull messages from subscriptions
+
+gcloud beta pubsub subscriptions pull --auto-ack SUBSCRIPTION --limit=25
+
+=== Optimizing Networking ===
+==== Connecting through Cloud VPC ====
+VPC = Virtual Private Cloud
+
+Cloud VPC Fundamentals
+Private network within Google Cloud Infrastructure
+Adds network to Compute Engine, Kubernetes Engine and App Engine (Flex)
+Global resource consisting of regional subnets, connected by WAN
+CLoud VPC includes:
+  Firewalls
+  Routes
+  Forwarding rules
+  Configuration of IP addresses, external or internal
+Two types of VPC creation: Auto mode and Custom mode
+Additional service include Shared VPC and Network Peering
+
+Custom
+set up subnet, region, IP range
+Reserve a static address
+
+Firewall rules, set up by default
+Allow or deny access to/from VMs
+
+Custom Firewall rule
+network
+priority
+Direction of traffic (ingress/egress)
+action on match
+Targets
+Source filter
+Source IP ranges
+
+Shared VPC allows internal IP use between devices
+
+==== Optimizing Cloud Load Balancing ====
+Cloud Load Balancing Fundamentals
+Fully managed incoming traffic service
+Distributes traffic across several VM instances
+Benefits
+  Autoscaling (by policy, CPU Utilization, or servicing capacity
+  Supports heavy traffic
+  Route traffic to closest instances
+  Detect and remove unhealthy instances
+Types of load balancing supported
+  Global external - HTTP/S, SSL, and TCP
+  Regional external - TCP/UDP within a region
+  Regional internal - between groups of instances in a region
+
+Menu -> Networking -> Network services -> Load balancing
+Details
+Frontend and Backend details
+Failover ratio related to health check
+Front end, single IP used to get into load balancer
+
+Create a load balancer
+HTTPS/TCP/UDP
+
+HTTPS
+
+==== Using Cloud CDN to Deliver ====
+Cloud CDN Fundamentals
+Accelerates delivery from Compute Engine and Cloud Storage
+Lowers networch legacy (latency?), offloads origin servers, and reduces serving costs
+Features include
+  Offels SSL at no additional cost
+  Supports HTTP/1.0, HTTP/1.1 and HTTP/2
+  Supports cache invalidation
+  Cache-to-cache filling supported
+General availability caches to 10 GB, Large Object Cache (BETA) to 5 TB
+Caching considerations
+  Caching is reactive
+  Caches cann be pre-loaded
+  Once enabled, caching is automatic
+  HTTP(S) load balance is required.
+
+Cache fills another cache with cache to cache filling
+
+Menu -> Networking -> Network Services -> Cloud CDN
+
+==== Investigating Other Networking Services ====
+Provides secure connection between on-premises and Cloud VPC
+Utilizes IPsec VPN gateways with encrypted/decrypted traffic
+Features include
+  Site to site VPN
+  Supports Internet Key Exchange (IKE) v1 and v2 with shared secret
+  Uses ESP in tunnel mode with authentication for encryption
+Routing methods supported
+  Dynamic gatesways using border gateway protocol
+  Policy-based routing
+  Route-based VPN
+Best for low/medium traffic 3 Gbps with direct peering: 1.5 Gbps without
+
+Cloud interconnect, increased bandwidth
+
+Cloud Interconnect Fundamentals
+Provides higher-capacity
+Dedicated Interconnect
+  Direct Physical connections with Google network
+  69 colocations facilities in 17 regions
+  Highest bandwidth: 10 Gbps per circuit (8 circuits max)
+  Routing equipment in colocation facility required
+Partner Interconnet
+  Connect to 3rd party service provider
+  Many more connection possibilities
+  Bandwidth from 50 Mbps to 10 GBps
+  Routing equipment not required
+Public internet bypassed
+VPN tunnels or NAT devices not needed
+Not encrypted - use app level encryption or own VPN
+
+
+
+==== Hands on Lab: Build a custom network in Google Cloud Shell ====
+Create network
+gcloud compute networks subnets create NETWORK --subnet-mode custom
+
+gcloud compute networks subnets create SUBNET --network NETWORK --region REGION --range
+CIDRRANGE
+
+gcloud compute networks subnets create SUBNET --network NETWORK --region REGION --range
+CIDRRANGE
+
+gcloud compute networks subnets list --network NETWORK
+
+Create firewall
+gcloud compute firewall-rules create FIREWALLRULE service:port,icmp --network NETWORK
+
+Create instances
+gcloud compute instances create INSTANCE --subnet SUBNET --zone ZONE
+
+GCP Portal
+Menu -> VM Instances
+Test firewall by attempting to connect to VM
+
+ping -c 3 IP
+-c # number of times to ping it
+
+=== Moving to the Cutting Edge with Google Cloud ===
+==== Machine Learning with Cloud AI ====
+Cloud AI Fundamentals
+Collection of services and APIs desgined to facilitate machine learning
+Includes hardware accelerators: TPUs (Tensorflow Processing Units)
+Primary service: CLoud Machine Learning ENgine (ML Engine)
+  Training
+    Trains computer models to recognize patterns in data
+    Supports TensorFlow, scikit-learn and XGBoost
+  Prediction
+    Online
+      Real-time processing with fully managed ML Engines
+      No Docker container required & supports multiple frameworks
+    Batch
+      For asynchronus operations
+      Scales to terabytes of data
+Data must be stored in accessible location, e.g. Cloud Storage
+
+Menu -> Big Data -> ML Engine
+Jobs and Models
+Create model first
+Create a version
+Name runtime vresion and pick a bucket
+
+Relates what it learns to outside world
+
+==== Real World Integration via Cloud IoT ====
+IoT Core, manages data, triggers events
+
+Cloud IoT Core Fundamentals
+Fully managed service for connecting and managing IoT devices
+Devices must be registered
+Works with both tlemetry (event data) & Device state data
+Receives data and sends to Cloud Pub/Sub topic
+Supports HTTP and MQTT protocols for communication
+Highly secure
+  Each device uses JSON Web Tokens for public/private keys
+  Supports RSA or Elliptic Curve algorithms to verify signatures
+  Key rotation support
+  Access to IoT core controlled by CLouid IAM roles and permissions
+Part of an IoT eco-system with Android Things and Google Beacon
+
+Menu -> Big Data -> IoT Core
+Registries first
+
+==== Migrating Info through Data Transfer ====
+Transfer applicance
+
+Cloud Data Transfer Fundamentals
+Range of options available ofr transferring data to Google CLoud
+Online Transfer
+  Tools available: console upload, JSON REST API, gsutil
+Storage Transfer Service
+  Imports online data to CLoud Storage
+  Supports transfer of objects from AWS S3Transfer Applicance
+  Physical device loaded on-prem and shipped to Google data center
+  Single device can hold petabyte of data
+  Far faster than online transfer for large amounts of data
+
+Menu -> Storage -> Transfer
+Create Transfer
+
+==== Hands on Lab: Working with BigQuery in Google Cloud Shell ====
+Copy data file from bucket
+gsutil cp gs://path/to/bucket .
+
+Create a BigQuery dataset
+bq mk DATASET
+
+List dataset
+bq ls
+
+
+Load data into the dataset
+bq load --source_format=FORMAT --skip_leading_rows=1 DATASET.TABLE FILETOLOADFROM schema
+name:TYPE,name:TYPE
+
+Confirm changes with
+bq ls DATASET
+bq show DATASET.TABLE
+
+Query the data
+bq query "QUERY"

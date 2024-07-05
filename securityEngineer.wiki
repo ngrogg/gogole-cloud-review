@@ -1,0 +1,3394 @@
+[[index|back]]
+
+= Google Cloud Certified Professional Cloud Security Engineer =
+
+== Practice Exams ==
+https://docs.google.com/forms/d/e/1FAIpQLSfSuKEE8cUQWj9sfak7QG9hpaljBC89Y22KoWMQFgoECZjzUg/viewform
+
+== Chapter 1 - Introduction ==
+=== Course Introduction ===
+Not much useful here
+Google Cloud Associate Engineer cert a pre-req Actual exam is 50 questions 2 hours long
+Practice exam at end of course
+
+== Chapter 2 - Resource Manager ==
+=== Resource Hierarchy ===
+Organization of resources/entites within GCP using parent/child relationship structure
+Resembles a file system found in traditional operating systems
+Top down policy inheritance, flowing from the parent to the child
+Each child object can only have one parent
+Policies are controlled by Identity and Access Management
+
+GCP Resource Hierarchy Detail
+Organization (root)
+Company, all entities foll up to organization
+All organization policies inherited by resources
+Organization Admin Role - Full power to edit any/all resources
+Personal emails can't access Organization/Folders level
+
+Folders (optional)
+Additional Grouping mechanism
+Grouping of other folders and projects
+IAM roles granted to a folder are inherited by all folders/projects in the folder
+
+Projects
+Core organizational component of GCP
+Required to use GCP resources
+Basis for creating, enabling and using all GCP services Identifiers
+Project ID (globally unique)
+Project number (automatically created, read only)
+Project Name ("Friendly Name")
+
+Resources
+Instances, APIs, Services, Buckets etc.
+
+=== Policies and Constraints ===
+Policies can be set on all layers of the hierarchy
+Organization, Folders, Projects or Resources
+Policies set at the Organization Layer, are inherited by all it's child folders and projects
+The policy for a resource is the union of the policy set on the resource and the policy inherited from it's ancestors
+Inheritance is transitive at any layer
+Permissive parent policies overrule restrictive child policies
+Policy hierarchy follows the same path as the GCP resource hierarchy
+Changing the resource hierarchy, changes the policy hierarchy as well
+Constraints,
+Type of restriction against a GCP service or a list of GCP services
+Applied to the Organization layer
+Inherited by all it's child folders and projects
+
+=== Resource Manager Hands-On ===
+Go to Projects dashboard
+Select dropdown
+"Select from ORGANIZATION"
+
+IAM
+Organization level IAM
+Folder
+Folder level IAM
+Projects
+Project level IAM
+If Project name is unique ID will be configured the same
+If not one will be generated
+Projects can be put under folders or organization when created
+
+=== Super Admin Best Practices ===
+A super admin account has admin access to everything in your Organization.
+It is not recommended for the day-to-day administration of your organization.
+
+Created when creating an organization resource
+Permissions to create/edit/destroy anything
+Used for admin account recovery
+Permissions are irrevocable
+
+Create a Super Admin Email Address
+Not specific to G Suite or Cloud Identity user
+Enable MFA
+
+Organization Admin Designation
+Create an Organization admin group for day-to-day activities on the Organization
+Follow the principle of least privilege
+Keep super admin user seperate from this group
+
+Discourage Super Admin Account Usage
+Enable MFS with a physical device
+Assign a separate account
+Stackdrive alerts when used
+
+== Chapter 3 - Cloud IAM ==
+=== Cloud IAM Overview ===
+Identity and Access Management (IAM)
+Cloud IAM lets you manage access control by defining who can do what on which resource
+Grant granular access to specific GCP resources
+Prevent unwanted access to other resources
+Lets you follow the principle of least privilege
+- Assigning only the privileges that are essential for performing the intended action.
+Grant only the necessary access to your resources.
+
+Who
+In IAM the who are known as members
+Members can be any of the following
+- Google Account/Cloud Identity User
+Any email address that is associated with a Google account, including gmail.com or other domains
+can be an identity.
+- Service Account
+An account that belongs to your application instead of an individual end user.
+- Google Group
+A named collection of Google Accounts and service accounts
+- Cloud Identity/G Suite Domain
+An organizations domain name (such as example.com)
+- allAuthenticatedUsers
+A special identifier that represents every authenticated GCP account (doesn't include anonymous users)
+- allUsers
+A special identifier that represents everyone, including anonymous users.
+
+What
+Determined by IAM role
+Colleciont of permissions
+What > Which Resource
+You don't directly grant users permissions
+You grant them roles which bundles one or more permissions.
+
+Primitive Roles
+There are three roles that existed prior to the introduction of Cloud IAM:
+- Owner
+- Editor
+- Viewer
+Roles on concentric.
+Owner role includes the permissions in the Editor role.
+Editor role includes the permissions in the Viewer role.
+
+Pre-defined Roles
+Cloud IAM roles that give finer-grained access control than primitive roles do.
+Created and maintained by Google.
+Automatically updated as necessary when new features or services are added to GCP
+Recommended over Primitive Roles
+
+Custom Roles
+Roles that you create to tailor permissions to the specific needs of your organization.
+User-defined
+Bundle one or more supported permissions
+Not maintained by Google or updated automatically
+
+Which Resource
+Refers to the various components of GCP
+Compute Engine instances, Cloud Storage buckets, user, tags, etc.
+Resources include Organizations, Folders, Projects, Services and all resources within them
+
+Policies
+Needed in order to grant roles
+A collection of statements that defines who has what type of access.
+Attached to a resource to enforce access control whenever ther resource is accesssed.
+Policies are represented by an IAM policy object
+An IAM policy object consists of a list of bindings
+A binding binds a list of members to a role.
+Roles are enforced from the top down
+
+IAM Wrap-Up
+Grant Members
+- Users
+- Groups
+- Organizations
+- Service Accounts
+
+Various Roles
+- Primitive
+- Pre-defined
+- Custom
+
+In a hierarchical Format
+To all layers of GCP
+Organization > Folders > Projects > Resources
+Policy Inheiritances >
+
+=== Cloud IAM Hands-On ===
+Tasks
+- Add a domain as a member
+IAM > Add
+New member
+Don't have to add an @ sign
+Type in domain name (site.com)
+Mind added spaces
+Select a role
+
+- Add a single users as a member
+IAM > Add
+Type user, you'll see them
+Select existing user
+Grant permissions
+Save
+
+- Create projects
+Add user to organization
+Resource Manager > Project creator
+
+- Attach projects to billing accounts
+Can't create servers, since they lack permissions to link to billing
+Edit user
+Add role
+Billing > Billing Account User
+Save
+User can set billing
+
+- Enabling viewing of other projects
+IAM organization level
+Edit user
+Add role
+Project > Viewer
+Save, refresh
+User can view other projects
+
+Users add in admin.google.com
+Looks the same in g-suite or cloud identity, different apps though
+Menu > IAM > Manage Resources
+alt,
+Dashboard > Project select
+
+Manage roles
+Menu > IAM > IAM
+Click edit pencil to view roles
+
+Organization Administrator
+Anyone with the role has full access to admin all users across organizations
+Highest perms
+
+Change from organization to project and re-open IAM
+Scope will change on it's own
+
+Inheritance column
+Shows organzation/project the roles inherit from
+
+=== Service Acounts ===
+Service Accounts Overview
+A special Google account that belongs to your application (or VM) instead of a user
+Application has no need for user authentication
+Authentication is between the application and the services
+Identified by it's email address, unique to account
+
+Types of Service accounts
+Google-Managed
+Represent different Google Services and are automatically granted IAM roles
+Ex. PROJECT_NUMBER-compute@cloudservices.gserviceaccount.com
+No real way to interact with service account
+
+User managed
+Created for/by user, based on enabled APIs in the project
+
+Example
+PROJECT_NUMBER-compute@developer.gserviceaccount.com
+PROJECT_ID@appspot.gserviceaccount.com
+
+Service accounts are both a member (who) and a resource (what)
+Service accounts are granted permissions to a resource
+Users are granted the serviceAccountUser role.
+User needs access to service account, service account needs access to resource.
+
+Service Account Keys
+Service account access is managed by account keys.
+Default service account keys are managed by Google.
+Custom service accounts can use user-managed (custom) keys
+Google maintains a public copy for verification, but the public/private key pair is yours to manage.
+Private keys cannot be retrieved by Google.
+Google-managed keys can be used.
+Choose the permissions to grant to a service account
+Code running on GCP?
+Yes, Google managed keys
+No, User-managed keys
+Does the service account need granular permissions?
+Yes, Predefined role
+No, Primitive role
+
+Service Account Scopes
+Legacy method of granting permissions for default service accounts on an individual instance.
+Grant per-instance permissions to other GCP resources via the instances.
+IAM roles or scopes determine service account permission for that instance.
+
+Service accounts grant applications/VMs access
+Users are granted access to act as a service account
+Service accounts are granted access to resources
+Service accounts use keys for access
+Service accounts are granted access based on both scope and IAM.
+
+=== Service Accounts Hands-On ===
+Hands-On
+Tasks:
+- Enable GCE API
+Dashboard
+Menu > IAM > IAM
+No service accounts
+Menu > Compute Engine
+API starting
+Go back to IAM
+Users created by Google
+Compute Engine
+Create new instance
+
+- View new service account created
+Menu > IAM
+Granted Editor role
+
+- View scopes of default service account
+You can use the default service account
+Access scopes:
+Allow default access
+Allow full access
+Set access for each API
+
+- Disable Storage scope
+Go to API access scope
+Ability to set more restrictive access
+What happens when setting a more restrictive access?
+
+- Instance Identity
+Connect to instance
+Who is running command?
+cloud config list
+Shows service account is running
+gsutil ls gs://pw-store-test
+gsutil ls gs://bucket
+
+- Attempt to access cloud storage
+Create a test file
+touch file1
+Use cp command to write to bucket
+gsutil cp file1 gs://pw-store-test
+Access denied message
+Even with default editor role, legacy scope overrules the IAM role
+Only applies to default compute service account
+
+- Create new instance with scope enabled and attempt to access cloud storage
+To avoid caching issues, create new instance with new permissions
+
+list items in bucket
+gsutil ls gs://bucket
+
+Able to list files in bucket
+
+Create file
+
+Copy to bucket
+gsutil cp file gs://bucket
+
+Able to upload with legacy read/write
+Works regardless of IAM permissions
+
+- Create new service account
+Menu > IAM > Service Accounts
+Create Service Account
+File in name
+account ID fills in automatically
+
+- Show custom key and default key
+Option to create a key
+Create key
+IMPORTANT: Make sure private key is safe! Cannot be retrieved
+Use JSON
+Key/Key ID saved
+Delete
+For lesson, using GCP key
+Going back to IAM you'll see user
+
+Now have option to choose account
+Selecting new account shows IAM roles instead of legacy options
+
+- Assign IAM roles
+Prompted to select a role
+Grant compute engine instance admin
+
+Prompted to add another user
+Leave blank for now
+
+Add user and grant them Project Viewer role
+Also compute engine admin role
+Should be able to interact with compute resource
+Didn't add service account role yet
+
+- Enter instance with new account
+Enter created project and instance
+Try to SSH using
+
+If you don't have both service account and admin role, connection will time out
+Will need service account permissions
+
+- Show user bob with and without storage account user
+Edit user
+Add Service Account > Service Account User role
+Refresh, and can SSH in
+Needed service account user role to act on user's behalf
+
+=== Cloud Identity ===
+Cloud Identity Overview
+Identity-as-a-Service solution used for managing users, groups and security settings from a centralized location
+Works with any domain you own
+Can use existing email, but won't have access to apps/services
+
+Single Sign-On
+SAML-based SSL through a 3rd part identity provider (IdP) where Google acts as the service provider
+Google, Active Directory or LDAP using GCDS
+Access third-party cloud apps but their credentials aren't stored with the 3rd party
+
+Security Assertion Markup Language, primary role is that it enables you to access multiple web applications using
+one set of credentials
+
+LDAP, Lightweight Directory Access Protocol, an open, vendor-neutral, industry standard application protocol for
+accessing and maintaining distributed directory information services over an Internet Protocol network.
+
+Multi-Factor Authentication
+2-factor authentication
+Physical security keys
+Google Prompt
+Google authenticator app
+Backup codes
+Text message or phone call
+
+Mobile Device Management
+Enforce policies for personal and corporate devices
+Create a whitelist of approved apps
+Requirement of company-managed apps
+BYOD, Bring your own device
+Enforces security on non-company devices
+
+Federate with on-premises Active Directory
+Cloud Identity maps (or federates) AD accounts to Cloud Identity accounts
+Mapping = Federation
+Same users in AD map to Google Cloud
+Users won't have to be manually entered
+Can be managed from AD.
+
+Google Cloud Directory Syn (GCDS)
+Synchronizesthe data in the Google domain with Active Directory or LDAP
+Google users, groups, and shared contacts are synchronized to match
+Active Directory > GCDS > Synchronize Accounts > Cloud Identity
+Active Directory < ADFS < Delegate Authentication < Cloud Identity
+
+How GCDS works
+Data is exported in a list from the LDAP server or Active Directory
+GCDS connects to the Google domain and generates a list of Google users, groups and shared contacts that you specify.
+GCDS compares lists and updates the Google domain to match.
+When synchronization is complete a report is emailed.
+
+How GCDS Synchronizes with AD/LDAP
+Performs a one-way synchronization, LDAP server is never updated or alerted
+Ensures Google domain data matches Active Directory or LDAP server
+Allows rule configuration for custom mapping (users, groups, non-employee contacts, user profiles, aliases, calendar
+resources and exceptions)
+No external access to your LDAP directory server
+
+=== Cloud IAM Best Practices ===
+Best Practices
+Principle of Least Privilege
+Apply only the minimal access level required for what's needed
+User predefined roles over primitive roles
+Grant roles at smallest scope necessary
+When using Service Accounts, treat each app component as a seperate trust boundary
+A child resource cannot restrict access granted on it's parent
+Create a separate service account for each service
+Restrict service account access
+Restrict who can create and manage service accounts
+Be cautious with Owner roles
+
+Service Accounts
+Rotate user-managed service account keys (wait until creation, then delete)
+Do not delete service accounts that are in use by running services
+Name service keys to reflect use and permissions
+Don't check in service account keys into srouce code or leave in Downloads directory
+
+Auditing
+Use Cloud Audit logs to regularly audit IAM policy changes
+Audit who can edit IAM policies on projects
+Export audit logs to CLoud Storage for long-term retention
+Restrict log access with logging roles
+
+Policy Management
+To grant access to all projects in your Organization, use an organization level policy
+Grant roles to a Google group instead of individual users when possible
+When granting multiple roles to a particular job, create a Google Groups instead
+
+=== Understanding Service Accouts and Scopes on Google Compute Engine ===
+Copy/paste the bucket ID we will be using
+Click the three bars in the top-left to open the menu and click on IAM & admin.
+Verify that the Compute Engine default service account member has the Editor Role.
+Open the top-left menu and select Storage.
+Highlight the Name of the bucket that ends with scope-lab and copy it to another notepad.
+First instance - Read Only Storage scope
+Create a Compute Engine instance with a Read Only service account scope, and attempt to copy a file to it.
+
+Navigate to the Compute Engine section, using the menu in the top-left of the page.
+Click Create.
+In the Identity and API access section:
+Access scopes: Set access for each API
+Storage: Read Only
+Click Create
+After about 30 seconds, the Compute Engine instance will show in the VM instances list.
+
+Click SSH under the Connect section.
+
+View the Google Cloud SDK configuration:
+
+ gcloud config list
+
+Attempt to read contents of the Cloud Storage bucket:
+
+Note: Be sure to replace BUCKET_NAME with the bucket name we copied in Step 1.
+
+ gsutil ls gs://BUCKET_NAME
+
+Attempt to write a file to the same Cloud Storage bucket (this operation will fail). Creating the file will work, but copying it over will not.
+
+touch file1
+gsutil cp file1 gs://BUCKET_NAME
+Close the SSH session tab.
+
+exit
+Second instance - Read Write Storage scope
+In your second instance, attempt to copy a file to the cloud storage bucket. It should succeed.
+
+Click CREATE INSTANCE.
+In the Identity and API access section:
+Access scopes: Set access for each API
+Storage: Read Write
+Click Create
+After about 30 seconds, the Compute Engine instance will show in the VM instances list.
+
+Click SSH under the Connect section.
+
+Attempt to read contents of the Cloud Storage bucket:
+
+Note: Be sure to replace BUCKET_NAME with the bucket name we copied in Step 1.
+
+ gsutil ls gs://BUCKET_NAME
+
+Attempt to write a file to the same Cloud Storage bucket (this copy operation should now succeed).
+
+touch file1
+gsutil cp file1 gs://BUCKET_NAME
+Close the SSH session tab.
+
+exit
+
+== Chapter 4 - Network Security ==
+=== Virtual Private Cloud (VPC) ===
+=== VPC Hands-On ===
+Prerequisites for this section
+Familiar with basic networking concepts
+Subnets, IP Address, routes, firewalls etc.
+Required skills for the exam
+
+VPC networks
+Virtual version of a physical network
+Software-defined network
+Sometimes just called a "network"
+Provides connectivity between resources in GCP
+Core resource for all networking functions
+Global resource (multi-regional) as well as firewall rules and routes
+Only Cloud provider that has private global VPCs
+VPCs are segmented into subnets
+Subnets are a regional resource and can span multiple zones
+
+Routing Traffic
+Routes define paths for packets incoming/leaving instances (ingress/egress)
+Firewall rules control traffic flowing in and out of the VPC
+Firewall rules apply to both outgoing (egress) and incoming (ingress) traffic in the network
+Private Google access is an option for internal communication only
+Connect with on-premises through Interconnect or VPN (hybrid)
+
+VPC Permissions
+Administration is secured using IAM
+VPC Networking baked into Compute Engine IAM Roles
+Compute Admin: Full access to instance and network admin roles
+Compute Network Admin: Full network admin role
+
+Limitations
+A network must have at least one subnet before you can use it
+VPC networks only support IPv4 unicast traffic
+Unicast: traffic, many streams of IP packets that move across networks flow from a single point,
+such as a website server, to a single endpoint such as a client PC.
+This is the most common form of information transference on networks.
+
+No IPv6 traffic support within the network
+IPv6 address support for global load balancers
+
+When it comes to routing it's taken care of by Google dynamically
+Routes to subnets (10.2.0.0/16, 192.168.1.0/24 10.138.0.0/24 etc.)
+
+=== VPC Peering ===
+New project
+Menu > VPC network
+Default will show name of VPN, subnet and creation mode
+Private Google Access
+Allows instances with public IPs only to reach certain APIs/services within GCP
+Flow logs are the logs for the VPC
+Off by default
+Static Internal IP addresses
+Privision IPs
+Default firewall rules
+ping, rdp, ssh, interal traffic
+All other traffic denied by default
+Create instance
+Management,security,network
+Network
+Network tags
+Network interfaces
+Default network for region
+Subnet assigned to region
+IP forwarding, not really necessary for exam
+
+Menu > VPC Network
+Create VPC network
+Name
+subnet creation mode
+Custom or automatic
+Auto replicates subnets from defaults with firewall rules
+
+Custom
+name subnet
+Choose region
+Choose IP range in CIDR notation
+
+Create instance to show subnet for new instances
+Set region to a region with newly created subnet
+Networking
+Can view custom-net and default net
+Can choose either subnet
+
+=== Shared VPC ===
+VPC Network Peering
+VPC Network Peering allows private connectivity across two VPC networks
+Regardless of whether or not they belong to the same project or the same organization
+
+Overview
+Does not traverse the public internet
+Used to make Services available SaaS privately across VPSs and Oranizations
+SaaS,
+Software as a service.
+
+Peering multiple network administrative domains
+Lower network latency - stays within Google network
+Greater network security - traffic is never exposed to the public internet
+Lower network costs - save on egress costs
+
+Properties
+VPC networks remain separate adminstratively
+Firewalls, routes and VPNs are taken care of, per VPC
+Each peering end is set up independently
+VPC peers always exchange subnet routes
+Subnets and static routes are global
+Dynamic routes can be regional or global
+A VPC network can peer with multiple VPC networks
+There is a limit that can be reached
+
+Restrictions
+A subnet CIDR range in one peered VPC network cannot overlap with a static route in another peered network
+Google does a check when
+- Attempting to peer
+- Creating a static route in a peered VPC network
+- Creating a new subnet in a peered VPC network
+Peering doesn't provide granular route controls to filter out which subnet CIDR ranges are reachable
+Firewall rules are used to filter traffic
+Transitive peering is not supported - must be peered directly
+Tags or service accounts from one peered network cannot be used in another.
+Each must have their own
+Internal DSN not accessible for Compute Engine in peered networks - must use IP
+
+Failing Peering Scenarios
+Typical VPC Peering scenario
+Projects peered with each other and no overlapping subnets are fine
+Overlapping subnets (same IP ranges w/ different subnets) are invalid
+
+Overlapping subnets when creating or expanding subnets
+ex. 10.1.0.0/24 <-> 10.1.1.0/24
+Extension of subnet
+Overlapping
+Make sure subnet ranges don't overlap
+
+On-Premises Access from Peer Network using Interconnect or VPN
+Network can reach other VPN tunnel since it's in the same region as the subnet
+This is why GCP allows global or regional routing
+Route from any region
+
+Firewall rules are not exchanged between peered networks
+Ingress traffic is blocked by default
+Must configure firewall rules separately in each VPC
+Source IPs map to CIDRs in VPC networks
+Firewall rules configured separately
+
+Peering scenarios
+Transit VPC for On-Premises Connectivity
+Peer networks for transit
+One VPC with connection, other connections reach via peered network
+Peering is allowed witha shared VPC
+Possible to set up VPC network peering between shared VPC networks
+Multiple Network interfaces per VM Instance
+Not on test, don't care
+
+=== VPC Peering Hands-On ===
+VPC Network Peering Example
+Create custom subnets in both projects
+Menu > VPC Networks
+Create VPC Network
+Custom subnet
+subnet-a
+10.0.0.0/16
+Leave everything else default
+Repeat on other project with different subnet range
+
+Create instances in both new subnets
+Menu > Compute Engine
+Create instance
+Networking
+Change from default subnet to created custom subnet
+Leave the rest as default
+Create
+Repeat on other project with other instance
+
+Create firewall rules to allow ssh/ping
+Menu > VPC Network > Firewall rules
+Create firewall rule
+Network to created subnet
+Targets all instances in network
+Give full access for source
+0.0.0.0/0
+^^ DO NOT DO THAT IN PRODUCTION
+Protocols and ports
+Specified protocols and ports
+tcp: 22
+Other: icmp
+Click create
+Go to other project and repeat
+
+Establish peering connection "peer-ab"
+VPC Network > VPC network peering
+Create connection
+You'll need the project ID and the name of the vpc to peer with
+ID not needed if in the same network
+Name connection
+Select created VPC
+Peered VPC network
+In another project
+Enter project ID
+Enter VPC name
+Ignore custom routes
+
+Establish peering connection "peer-ba"
+Repeat above in other project
+Check to see if Status 'Connected'
+
+Test connection from Instance B to Instance A
+Note internal IP to test connectivity between servers
+ping -c 5 COUNT IP
+
+=== Shared VPC ===
+Shared VPC allows an organization to connect resources from multiple projects to a common VPC network
+in order to communicate securely within the internal Google network
+
+Concepts
+A project that participates in Shared VPC is either a host project or a service project
+Designate a project as a host project
+Then attach one or more projects to the host project
+VPC networks in the host project are shared VPCs
+Must be within the same organization
+Cannot be both a host and service project simultaneously
+Administered by different departments or teams in the organization
+
+networks
+A shared VPC network is a VPC network defined in a host project and made available as a centrally shared network
+A single host project can have more than one Shared VPC network
+Host and service projects are connected by attachments at the project level
+
+A project not in a shared VPC is a 'standalone project'
+
+IAM Roles and Admin
+Implement a security best practice of least privilege for network administration, auditing and access control
+Organization Administrators: Full control
+Shared VPC Admin: Administers Shared VPC for the organization, computer.xpnAdmin
+Service Project Admins: Maintain ownership and control over resources defined in the service proejcts, computer.networkUser
+Network Admins: Full control over all network resources except for firewall rules and SSL certificates, compute.networkAdmin
+Security Admins: Manage firewall rules and SSL certificates
+
+Limitations
+Some resouces must be re-created in order to use a Shared VPC network
+When a Shared VPC admin attaches an existing project to a host project, that project becomes a service project
+It's existing resources do not automatically use shared network resources
+
+=== Network Isolation and Firewall Rules ===
+Firewall Overview
+
+Firewall Rules
+Allow or deny traffic to and from your virtual machine based on a specific configuration
+Firewall rules are always enforced
+Stateful
+In computing, a stateful firewall is a network-based firewall that individually tracks sessions of network connections traversing it.
+Stateful packet inspection, also referred to as dynamic packet filtering, is a security feature often used in non-commercial and business networks.
+Automatically allows return traffic
+
+Defined at the network (VPC) level but enforced at the instance level
+Rules are enforced between instances and other networks as well as between instnaces on the same network
+Every network has two implied firewall rules:
+- Allow egress rule (allow all outbound traffic)
+- Deny ingress rule (deny all incoming traffic)
+Not shown in cloud console
+Have lowest priority
+
+Always blocked traffic
+GRE traffic
+GRE is a tunneling protocol used in VPN traffic
+Protocols other than TCP, UDP, ICMP, and IPIP
+Egress traffic on TCP port 25 (SMTP)
+
+Always allowed traffic
+DHCP
+DNS
+Instance Metadata (169.254.169.254)
+NTP
+
+Firewall Rule components
+Priority
+Lowest number is highest priority
+Direction of Traffic
+Ingress or Egress
+Action on Match
+Allow or Deny (permits or blocks traffic)
+Target
+Every firewall rule MUST have a target (instances, tags or service accounts)
+Source or Destination for applied rules
+Protocol and Port
+TCP, UDP, ICMP, SSH
+Enforcement Status
+Enabled or Disabled
+
+Network Tags
+Text attributes for Compute Engine instances
+http-server open to port 80
+Allow you to apply firewall rules and routes to a specific instance or set of instances
+Only aply to the VPC network where the instance's primary interface is located
+Don't need to be unique
+Can be used in different networks for different purposes.
+
+Private Google Access
+Allows instances with internal IP addresses only to reach certain APIs and services withing GCP
+Enable/disable via subnet setting (subnet level)
+Cannot have external IP addresses
+No effect on instances with external IPs
+Support for services such as Cloud Storage, Big Query
+No support for Cloud SQL
+^^ Comes up on exam
+
+=== Firewall Rules Hands-On ===
+Tasks Allow SSH access to all instances
+Menu > VPC > Firewall Rules
+Create rule
+Name rule
+Logs off
+network, select configured VPC
+Stock priority of 1000
+ingress traffic
+Allow on match
+Targets all instances in network
+Allow access from anywhere 0.0.0.0/0
+^^ Don't do that in production
+Second source filter will allow multiple sources of validation
+Protocols and ports
+Specific port
+port 22 on tcp
+Create  rule
+
+Allow ICMP (ping) to selected instances using network tags from subnet-1
+First edit instance
+network tag
+Add tag 'allow-icmp'
+Save
+Menu > VPC Network > Firewall Rules
+Create a firewall rule
+Leave mostly default
+Targets leave as default
+Target tags, 'allow-icmp'
+IP ranges
+Use subnet range
+192.168.1.0/24
+Other protocols
+ICMP
+Create rule
+
+SSH to instance
+Note internal IP
+ping IP
+
+=== Load Balancing ===
+Distribute load-balanced compute resources in single or multiple regions for high availability
+
+Overview
+Sits in front of your instances using an IP (frontend)
+Serves traffic to multiple backend targets
+Fully distributed and software-defined
+Managed service
+
+Types of Load Balancing
+Global vs. Regional
+When you want to provide access using a single IP
+
+External vs. Internal
+Distribute traffic coming from the internet
+Internal is traffic in network
+
+HTTP(S) vs TCP/UDP
+
+Types of Load Balancers
+HTTP(S)
+Requires global external load balancing
+
+SSL Proxy
+TCP Proxy
+Internal
+Network
+
+Global vs. Regional
+Global:
+HTTPS Load Balancing
+SSL Proxy
+TCP Proxy
+
+Regional:
+Internal TCP/UDP Load Balancing
+Network  TCP/UDP Load Balancing
+
+External vs. Internal
+External:
+HTTPS Load Balancing
+SSL Proxy
+TCP Proxy
+Network TCP/UDP Balancing
+
+Internal:
+Interal TCP/UDP Load Balancing
+
+Location Based Load Balancing
+Covered under almost every type
+Routes traffic based on location of incoming traffic
+
+Content Based Load Balancing
+URL load balancing
+Traffic goes to either video resources or static content
+
+Types of Load Balancers
+HTTP(S) Load Balancer
+Layer 7 Load Balancing: Application Layer
+Global: Cross-Regiopn (External)
+Support HTTPS and SSL (TLS) for encryption in transit
+IPv4/IPv6 traffic terminates at load balancer and forwards traffic as IPv4
+Traffic distributed by location or by content
+Forwarding rules in place to distribute defined targets to target pool (instance group)
+URL maps direct requests based on rules
+SSL certificate nrrfrf for HTTPS (Google-managed or self-managed)
+Ports used: HTTP 80/8080; HTTPS 443
+
+SSL Proxy
+Layer 4 Load Balancing: Network Layer
+Global: Cross-Region (External)
+Support for TCP with SSL offload (non-HTTPS encrypted traffic)
+IPv4/IPv6 traffic terminates at load balancer and forwards traffi as IPv4
+Traffic distributed by location
+Forwarding rules in place to distribute defined targets to target pool (instance group)
+Client SSL sesssions terminated at the load balancer
+End-to-end encryption is supported by configuring backend services to accept traffic over SSL
+Can be used for other protocols that use SSL such as websockets and IMAP over SSL (465,587,993)
+SSL policies can be applied (SSL features)
+Compatible, Modern, Restricted
+TLS 1.0 (Default), 1.1 or 1.2
+Cloud SSL is used for non-HTTP(S) traffic
+
+TCP Proxy
+Layer 4 Load Balancing: Network Layer
+Global: Cross-Region (External)
+Intended for non-HTTP traffic
+IP4/IP5 traffic terminates at load balancer and fowards traffic as IPv4
+Intelligent routing: Route to locations that have capacity
+Supports many common ports
+Able to forward traffic as TCP or SSL
+
+Network
+Layer 4 Load Balancing: Network Layer
+Regional: External
+Supports either TCp or UDP, not both
+Load balance UDP, TCP and SSL traffic on ports that are not support by the TCP proxy and SSL proxy
+SSL traffic decrypted by your back ends instead of by the load balancer
+Traffic distributed by incoming protocol data
+Protocols, scheme and scope
+no TLS offloading or proxying
+Forwarding rules in place to distribute defined targest to target pool (instance group) for TCP and UDP only
+Other protocols use target instances
+Self-managed SSL certificates
+
+Internal
+Layer 4 Load Balancing: Network Layer
+Single Region: Internal
+TCP or UDP, not both
+Blanaces traffic withing GCP across instances
+Cannot be used for balancing internet traffic
+Traffic sent to back end directly
+Does not terminate client connections
+Forwarding rules have the following specifications
+Specify at least one and up to five ports by number
+Specify all to forward traffic on all ports
+
+=== Cloud Interconnect and Cloud VPN ===
+Virtual Private Network
+Connects on-premises network to VPC or two VPCs in GCP
+IPsec tunnel over the public internet
+Encrypted by one gateway and decrypted by the other
+Site-to-site VPN only (no site to client)
+Can be used in conjunction with Private Google Access (RFC 1918)
+Supports up to 3 Gbps per tunnel (8 tunnels max)
+Static or dynamic routing (using Cloud Router)
+Dynamic routing recommended
+Support for IKEv1 or IKEv2 using shared secret
+
+Internet Key Exchange (also known as IKE, IKEv1 or IKEv2) is a protocol that is used to generate a security
+association within the Internet Protocol Security protocol suite.
+
+Cloud Interconnect
+Physical connection between Google and on-premises network
+Doesn't traverse public internet (dedicated)
+Can be used in conjunction with Private Google Access (RFC 1918)
+Low latency
+Location in a colocation facility (Google's peering edge)
+Options
+Dedicated (from Google) or Partner
+Dedicated: 10 Gbps link (up to 8) or 100 Gbps link (2)
+Partner: 50 Mbps - 10 Gbps
+Partner is cheaper
+Egress cost savings, due to direct line to Google
+$1700/mo per 10 Gbps link
+Minimum cost
+
+When to use Interconnect vs VPN
+Use Interconnect
+Prevent traffic from traversing the public internet
+Dedicated physical connection
+Extension of your VPC network
+High-speed connection is needed
+Low latency
+Heavy outgoing traffic (egress) from GCP
+Private Google Access available for on-premises host
+
+Use VPN
+Public internet access is needed
+Peering location is not available
+Budget constraints
+High speed/low latency is not needed
+Regular outgoing traffic (egress) from GCP
+
+=== Cloud DNS and DNSSEC ===
+Cloud DNS
+Overview
+Managed Domain Name System
+Global Service
+Phonebook for the internet
+IP = Domain
+Humans = domainname
+Computers = IP
+100% SLA (No downtime)
+^^ Service Level Agreeements
+
+Concepts
+Built around projects
+Managed Zones - public/private
+Public - Publicly facing
+Private - Within specified VPC networks
+Each domain has it's own zone
+
+DNSSEC
+Feature of Cloud DNS that authenticates responses to domain name lookups
+Protecting your domains from spoofing and cache poisoning attacks
+Type of attack that exploits vulnerability in DNS, diverts internet traffic away from legit servers to fake ones
+Can spread from one server to multiple servers
+DNSSEC providdes strong authentication but not encryption of domain lookups
+Both registrar and registry must support DNSSEC for the TLD that you are using
+Top Level Domain
+Last segment of domain name
+.com, .net or .io
+
+Enabling DNSSEC
+Adding a DS record to the TLD at the registrar
+If no DS record is added, enabling DNSSEC will not work
+Enable DNSSEC on the domain in the console or using command line
+
+Network Services > Cloud DNS
+Create DNS zone
+Create public zone
+Enter zone name domain-com for example
+DNS name use domain.com
+When migrating to GCP DNS you could migrate from DNSSEC
+Create
+Click dropdown and enable
+Asks if you enabled DS record
+
+=== VPC Best Practices ===
+Network Security
+
+Use internal IP and Private Google access when possible
+Start with a single VPC for resources that have common requirements
+Easier to create, maintain and understand
+Create a VPC for each team, connected to a shared services VPC
+Granular level control for each VPC
+Isolate sensitive data in it's own VPC
+Achieve HIPAA or PCI compliance
+Cost, performance and security needs for VPC connection
+VPC network peering
+External vs Internal Routing
+Cloud VPN or Interconnectd (dedicated or partner)
+Use addditional tols to help secure and protect applications
+Load balancer, Cloud Armor, Identity Aware Proxy (IAP), Security Command Center
+Use VPC Flow Logs for networking monitoring, forensics, real-time security analysis and expense optimization
+Tailor them when possible
+
+=== Connecting Networks with Google Cloud VPN Using Static Routes ===
+Introduction
+Cloud VPN allows you to connecting an on-premises network (or other external network) to a Google Cloud VPC over a secure IPSec connection for secure internal network (RFC1918) access. We will practice using the Cloud VPN service to connect two separate VPC networks to communicate over an internal IP address using static routes.
+
+Solution
+On the lab page, right-click Open Google Console.
+Select the option to open it in a new private browser window. This option will read differently depending on your browser (e.g., in Chrome, it says "Open Link in Incognito Window").
+Sign in to Google Cloud Platform using the credentials provided on the lab page.
+On the Welcome to your new account screen, review the text, and click Accept.
+In the "Welcome Cloud Student!" pop-up once you're signed in, check to agree to the terms of service, choose your country of residence, and click Agree and Continue.
+Create Static IP Addresses for VPN Gateways
+In the top left corner, click the hamburger menu icon (the icon with three horizontal bars) to access the navigation menu.
+
+Under Networking, click on VPC network. This should show both networks with their own subnet and region.
+
+Click on the hamburger menu icon again.
+
+Under Compute, click on Compute Engine. This should show you both Compute Engine instances, server-1 and server-2.
+
+To test if the servers can ping each other or not, click on SSH under the Connect column of the server-1 row. This should open a terminal in a new browser tab or window.
+
+In the terminal, ping the internal IP address of server-2:
+
+ping 10.0.2.2
+Return to the Compute Engine page and copy the external IP address of server-2.
+
+Return to the terminal and ping the external IP address of server-2:
+
+ping EXTERNAL_IP_ADDRESS
+Return to the Compute Engine page and click on the hamburger menu icon in the top left corner.
+
+Under Networking, select VPC network.
+
+In the VPC network menu, select External IP addresses.
+
+Copy and paste the external IP addresses for both VM instances into a separate Notepad file or other place where they can be easily referenced later.
+
+To start creating a static IP address for vpn-gateway-1, click on the Reserve Static Address button.
+
+Configure the following options on the Reserve a static address page:
+
+Name: Enter "gateway-address-1".
+Region: Select us-central1.
+Leave the rest of the settings as default.
+Click Reserve.
+When the new gateway-address-1 is available, copy and paste the external IP address into the separate Notepad file or other file.
+To start creating a static IP address for vpn-gateway-2, click on the Reserve Static Address button.
+Configure the following options on the Reserve a static address page:
+Name: Enter "gateway-address-2".
+Region: Select us-east1.
+Leave the rest of the settings as default.
+Click Reserve.
+When the new gateway-address-2 is available, copy and paste the external IP address into the separate Notepad file or other file.
+Create the VPN Gateways and Tunnels
+Click the hamburger menu icon in the top left corner.
+Under Networking, select Hybrid Connectivity.
+In the Hybrid Connectivity submenu, click VPN.
+Click the Create VPN connection button.
+Click the radio button next to Classic VPN and click Continue.
+On the Create a VPN connection page, configure the following options in the Google Compute Engine VPN gateway section:
+Name: Enter in "vpn-gateway-1".
+Network: Select network-1.
+Region: Select us-central1.
+IP address: Select gateway-address-1.
+Configure the following options in the Tunnels section:
+Name: Enter in "vpn-tunnel-1".
+Remote peer IP address: Copy in the IP address for vpn-gateway-2 from your Notepad file or other separate file.
+IKE version: Select IKEv2.
+IKE pre-shared key: Click the Generate and copy button to generate a strong passcode. Copy and paste that passcode into the same Notepad file or other separate file where you have been recording IP addresses.
+Routing options: Select Route-based.
+Remote network IP ranges: Enter in "10.0.2.0/24", the address for subnet-b.
+Click Done.
+Click Create.
+While this is trying to set up, click on the + VPN Setup Wizard button at the top.
+Click the radio button next to Classic VPN and click Continue.
+On the Create a VPN connection page, configure the following options in the Google Compute Engine VPN gateway section:
+Name: Enter in "vpn-gateway-2".
+Network: Select network-2.
+Region: Select us-east1.
+IP address: Select gateway-address-2.
+Configure the following options in the Tunnels section:
+Name: Enter in "vpn-tunnel-2".
+Remote peer IP address: Copy in the IP address for vpn-gateway-1 from your Notepad file or other separate file.
+IKE version: Select IKEv2.
+IKE pre-shared key: Paste in the generated key that we created a few moments ago while creating the first VPN tunnel.
+Routing options: Select Route-based.
+Remote network IP ranges: Enter in "10.0.1.0/24", the address for subnet-a.
+Click Done.
+
+Click Create. The connection for the VPN tunnels may take a minute or two to establish.
+
+Click the Cloud VPN Tunnels button to verify that the tunnels are successfully established in both directions.
+
+To further verify that it worked, click on the hamburger menu icon in the top left corner.
+
+Under Compute, select Compute Engine.
+
+On the VM Instances page, copy the internal IP address for server-2.
+
+Return to the browser window where the terminal for server-1 should still be open. If you already closed this window before, then click on SSH under the Connect column of the server-1 row. This should open a terminal in a new browser tab or window.
+
+Attempt to ping server-2's internal IP address:
+
+ping INTERNAL_IP_ADDRESS_OF_SERVER-2
+Return to the VM Instances page, and click click on SSH under the Connect column of the server-2 row. This should open a terminal in a new browser tab or window.
+
+Copy the internal IP address for server-1.
+
+In the terminal for server-2, ping the internal IP address for server-1:
+
+ping INTERNAL_IP_ADDRESS_OF_SERVER-1
+Both pings should work successfully now that the VPN tunnels have been established between the two VPC networks to allow the Compute Engine instances to communicate with each other.
+
+=== Creating Firewall Rules on a Google Cloud VPC Network ===
+Introduction
+In this hands-on lab, we will be presented with a custom VPC that has four instances spread across three subnets with zero firewall rules created. We will configure two different firewall rules: one to allow SSH access to all instances on the network, and another one using specific network tags to only allow ICMP (ping) access to one instance, and only from a specific subnet. This will demonstrate using both wide-scope and narrow-scope firewall rules.
+
+How to Log in to Google Lab Accounts
+On the lab page, right-click Open GCP Console and select the option to open it in a new private browser window (this option will read differently depending on your browser — e.g., in Chrome, it says "Open Link in Incognito Window"). Then, sign in to Google Cloud Platform using the credentials provided on the lab page.
+
+On the Welcome to your new account screen, review the text, and click Accept. In the "Welcome L.A.!" pop-up once you're signed in, check to agree to the terms of service, choose your country of residence, and click Agree and Continue.
+
+Steps Before Starting the Lab
+In the top-left menu, click VPC network.
+Click the default network.
+Click DELETE VPC NETWORK.
+Click DELETE in the Delete a network dialog. You can continue on to the next steps while it's deleting. You may have to refresh the page after the operation is complete.
+Click Firewall rules in the left-hand menu. Notice we do not have any created for the custom-vpc network.
+From the top-left menu, click Compute Engine.
+Click on the SSH button to the right of any of the four instances listed. The SSH session will eventually time out because we do not have port 22 access (SSH) to any instances on our network, which we need to fix.
+Allow SSH Access to All Instances
+In the Google console, from the top-left menu, scroll down to VPC network, and then click on Firewall rules from the sub-menu.
+Click Create firewall rule.
+Set the following values:
+Name: ssh-allow
+Network: custom-vpc
+Targets: All instances in the network
+Source filter: IP ranges
+Source IP ranges: 0.0.0.0/0
+Protocols and ports: Specified protocols and ports
+tcp: Check, and type in 22
+Click Create. It will take about 10 seconds for the rule to finish creating.
+From the top-left menu, click Compute Engine.
+Click any of the SSH buttons next to our instances. It should successfully connect. Close out of the session.
+Apply Network Tag to instance-2
+Still on the VM instances page, click instance-2.
+Click EDIT.
+Under Network tags, enter "icmp-allow".
+Hit Enter to confirm the tag.
+Click Save at the bottom.
+From the top-left menu, select VPC network.
+Copy the IP address listed for subnet-a into a text file, as we will need it a little later.
+Create a Narrow-Scope Firewall Rule for instance-2
+Click Firewall rules in the left-hand menu.
+Click CREATE FIREWALL RULE.
+Set the following values:
+Name: allow-icmp
+Network: custom-vpc
+Targets: Specified target tags
+Target tags: Enter "icmp-allow", and hit Enter
+Source filter: IP ranges
+Source IP ranges: Enter the subnet-a IP address you noted a minute ago
+Protocols and ports: Specified protocols and ports
+Other protocols: Check, and type in icmp
+Click Create.
+Test ICMP Firewall Rule for Success
+From the top-left menu, click Compute Engine.
+
+Copy the internal IP next to instance-2 (it should be 10.0.2.2).
+
+Click SSH next to instance-1a.
+
+Once the connection is established, attempt to ping instance-2:
+
+ping <INSTANCE-2_INTERNAL_IP>
+It should be successful.
+
+Hit Ctrl+C to quit ping.
+
+Copy the internal IP next to instance-3 (it should be 10.0.3.2).
+
+Back in the instance-1a terminal, attempt to ping instance-3:
+
+ping <INSTANCE-3_INTERNAL_IP>
+It will fail because instance-3 doesn't have the icmp-allow applied to it.
+
+Hit Ctrl+C to quit ping.
+
+Close out of the instance-1a session.
+
+Click SSH next to instance-3.
+
+Once the connection is established, attempt to ping instance-2 again:
+
+ping <INSTANCE-2_INTERNAL_IP>
+It should not be successful because the firewall rule allowing ICMP access doesn't apply to the IP range for subnet-c.
+
+== Chapter 5 - Encryption on Google Cloud Platform ==
+=== Encryption Overview ===
+What is Encryption?
+Encryption is a process that takes legible data (plaintext) as input and transforms it into illegible data (ciphertext)
+
+Makes the data unreadable
+Protects your data
+An algorithm transforms the data
+Google Cloud uses AES
+Advanced Encryption Standard
+
+Keys are used to encrypt and decrypt the data
+Public/private key
+Private key (symmetric) encryption and decryption keys are the same
+Public Key (asymmetric) used for encryption; decryption requires a roeesponding private key
+
+Adds a layer of defense to protect data
+Unintended recipients cannot read data
+Hackers
+Unauthorized Access
+Protects sensitive data
+Allows organizations to achieve compliance
+HIPAA, FIPS, PCI DSS
+
+=== Encryption at Rest ===
+Types of Encryption
+Encryption at Rest
+Type of encryption used to protect inactive data stored on disk from exfiltration
+
+Encryption in Transit
+Type of encryption used to protecct data moving between two separate locations (or endpoints) from interception by unauthorized users.
+
+Encryption at Rest
+Encryption at rest refers to protecting data that is stored on a disk (including solid-state drives) or backup media
+
+Default Encryption
+Google Cloud Platform encrypts customer data stored at rest by default
+Key creation and rotation are managed by Google Cloud
+
+Encryption Process
+Data is broken into subfile chunks
+Each chunk is encrypted at the storage level with its own unique encryption key
+Two chunks will not have the same encryption key, even if they are
+ - Part of the same Google Cloud Storage object
+ - Owned by the same customer
+ - Store on the same machine
+Each updated chunk is encrypted with a new key
+
+The key used to encrypt the data in a chunk is called a data encryption key (DEK)
+DEKs are generated by the storage system using Google's common cryptographic library, Keyczar
+The AES algorithm is used to encrypt data at res (AES-128 or AES-256
+Advanced Encryption Standard
+
+Implemented using BoringSSL
+Fork of OpenSSL
+Backups are encrypting used a separate DEK
+
+Encryption using KMS
+For when you have a requirement to manage your own encryption key for any sensitive data you may have.
+
+Cloud Key Management Service (KMS)
+The key used to encrypt the data in a chunk is called a data encryption key (DEK)
+DEKs are encrypted with a key encryption key (KEK)
+Process known as envelope encryption
+KEKs are stored centrally in CLoud Key Management Service (Cloud KMS)
+
+What is Cloud KMS?
+A central repository for storing KEKs
+Generate, use, rotate, and destroy symmetric encryption keys
+KEKs are not exportable from KMS
+Encryption and decryption done with keys in KMS
+Helps prevent misuse and provide and audit trail
+Automatically rotates KEKs at refular intervals
+Standard rotation period is 90 days
+Managed by Access Control Lists (ACLs) for each key
+Per key policy
+Track every time it is used, authenticated and logged
+Makes human accessibility auditable
+
+Encryption key hierarchy
+Protects a chunk of data with a DEK wrapped with a KEK in KMS which is in turn protected by root KMS and the Root KMS master key distributor
+
+Customer supplied ecryption keys
+CSEKs
+Keep Encryption keys on premises where required and use them to encrypt services in Google Cloud
+Customer-supplied Encryption Keys (CSEKs)
+Control access and use of data at the finest level of granularity, ensuring data security and privacvy
+Manage encryption of cloud-hosted data the same way as current on-premises data
+Have a provable and auditable root of trust over resources
+Be able to further separate and segregate customer data, beyond the use of ACLs
+Customers can use existing encryption keys that they manage with the Google Cloud Platform in combination with Customer-Supplied Encryption Keys
+Only available for Cloud Storage and Compute Engine.
+
+=== Encryption in Transit ===
+Encryption in Transit protects your data if communications are intercepted whiel data moves
+between yoru site and the cloud profivder or between two services
+
+Removing the need to trust the lower layers of the network, which are commonly provided by third parties
+Reducing the potential attack surface
+Preventing attacks from accessing data if communications are intercepted
+
+Physical boundary
+Barrier to the physical space that is controlled by or on behalf of Google
+Google ensures that rigorous security measures are in place at these boundaries
+Automatically enforces additional protections outside of Google's physical trust boundary
+
+Traffic Routing
+Google Front End (GFE)
+Globally distributed system that Google Cloud services accept requests from
+GFE features include:
+Terminating traffic for incoming HTTP(S), TCP, and TLS proxy traffic
+DDOS attack prevention
+Routing and load balancing traffic to Google Cloud services
+Google implements the following security strategy within GFE:
+Authentiacation, used to verify data
+Integrity: Ensures the dat you send arives at it's destination unaltered
+Encryption: Ensures your data is incomprehensible while in transit to keep it private
+Points of presence aroudn the globe with routes advertised via unicast or anycast
+
+Types of routing requests
+Google encrypts and authenticates all data in transit at one or more network layers when data moves outside the physical boundaries controlled
+by Google
+
+User to Google Front End encryption
+User to a customer application hosted on Google Cloud
+Virtual machine to Virtual machine
+Virtual machine to Google Cloud service
+Google Cloud service to Google Cloud service
+
+Methods of Encryption
+Virtual Network Encryption and Authentiaction
+Encryption is performed at the network layer (Layer 3)
+AES-128
+Session keys are established on hosts
+Protected by ALTS
+Application Layer Transport Security
+
+Security tokens used for authentiation
+Generated for every flow; consist of token key and host secret
+Protects a compromised host from spoofing packets on the network
+
+IPSec Tunnel
+Layer 3 traffic
+Traffic traveling between the two networks is encrypted by one VPN Gateway and decrypted by the other VPN gateway
+IKE v1 (AES-128), IKE v2 (AES-256)
+
+Methods of encryption
+Transport Layer Security (TLS)
+Any data sent to GFE is encrypted in transit using TLS (default)
+ALso used in API interactions
+Boring SSL
+TLS in the GFE is implemented with BoringSSL
+Fork of OpenSSL
+Automatically negotiates the highest version of the protocol to ensure the best possible security
+
+Google's Certificate Authoriry
+Identity verification achieved in TLS through the use of a certificate
+Certificate holds DNS hostname of server and public key
+
+Root key migration and key rotation
+Google is responsible for the rotation of keys and certificates
+TLD certificates - rotated every 2 weeks
+Lifetime: 3 months
+Keys - rotated dail
+Lifetime: 3 days
+
+Application Layer Transport Security (ALTS)
+Layer 7 traffic
+Mutual authentication and transport encryption system developed by Google
+Used for securing Remote Procedure Call (RPC) communications withint Google's infrastructure
+Identites are bound to entites (user, machine, or service) instead of to a specific server name or host
+Relies on both the Handshake protocol and the Record protocol
+Governs how sessions are established, authenticated, encrypted and resumed.
+GFE to server/server to service
+
+=== Cloud KMS ===
+Cloud Key Management Service
+Service that lets you manage cryptographic keys for every service within the Google Cloud Platform
+
+Overview
+Generate, use, rotate and destroy symmetric encryption keys
+Automatic or at-will key rotation
+Asymmetric and symmetric key support
+Used to encrypt all data on Google Cloud (default)
+integrated with Cloud IAM and Cloud Audit Logs
+Tracked every time it is used and authenticated and logged
+Permissions are handled by Access Control Lists (ACLs) on a per-key basis
+Per key policy
+Used with Cloud HSM
+Cloud HSM = Hardware Security Module
+DEKs are encrypted with a key encryption key (KEK)
+Process known as envelope encryption
+Encrypting key with another key
+A central repository for storing KEKs
+KEKs not exportable from KMS
+Automatically rotates KEKs at regular intervals
+Standard rotation period is 90 days
+
+Availability
+Regional
+Dual-regional
+Mutl-regional
+Global
+Users and services who are far away from the location will experience higher latency
+Read operations are served by a data center close to the requesting user or service
+Write operations must propagate to multiple data centers when performed on multi-region or global resources
+Will be slower as a result
+
+Keys are stored in a heirarchical structure
+Project
+Location
+Key ring
+Key
+Key version.
+
+Project
+KMS belongs to a project
+Best practice is to run in a separate project
+
+Location
+Where KMS keys are stored
+Where KMS receives requests
+
+Key Ring
+Grouping of keys for organizational purposes
+Keys inherit permissions from the key ring
+
+Key
+Cryptographic key
+Symmetric or asymmetric
+
+Key version
+The material that makes up the key (length, algorithm)
+Numbered sequentially
+States: Enabled, disabled, scheduled for destruction or destroyed
+
+Key states
+Every key version has a state
+
+Pending generation
+Being generated
+Asymmetric keys only
+Enabled
+Disabled
+Can be put back into the enabled state
+Scheduled for destruction
+Can be put back into the disabled state
+Destroyed
+Symmetric encryption
+Primary key version to be enabled for encryption
+Asymmetric encryption
+Key version to be enabled for encryption or digital signing
+
+Key rotation
+Symmetric key rotation
+A new version of a key is generated
+New key mared as primary
+Previous key not destroyed
+Old key available for decryption
+Automatic key rotation
+Asymmetric key rotation
+A new key version of a key is generated
+Manual key rotation only
+
+When a symmetric key is used for encryption or decryption the user specifies a key
+now a key version. KMS handles the encryption and decryption usage on behalf of the user
+whan a symmetric key is rotated.
+
+Separation of duties
+Ensuring that one individual does not have all necessary permissions to be able to complete a malicious action
+users normally should not have access to decryption keys
+helps prevent security or privacy incidents and errors.
+Move KMS to it's own project
+Best practice
+
+Secret Management
+Cloud KMS does not directly store secrest
+Encrypts secrets that you store elsewhere
+Use the default encryption build into Cloud Storage buckets
+Use appliction layer encryption using a key in Cloud KMS
+
+=== Creating and Managing Encryption Keys Hands-ON ===
+Tasks
+Create a key ring
+Menu > IAM & Admin > Cryptographic keys
+Create key ring
+Put in name
+Leave as global, don't do on prod
+
+Create a key
+Enter key name
+Purpose, default is symmetric
+Have option for asymmetric
+Leave key material default or import material for HSM purposes
+Set rotation, leave default
+Shows rotation summary
+Once created you have option to edit/destroy key
+Click the key to find key details
+Permissions will show what's there.
+Can add a member and select a role.
+Activity will track key activity for auditing.
+
+Create the secret.txt
+Activate Cloud Shell
+Create secret.txt file
+
+Encode the secret file into base 64
+cat secret.txt | base64
+Encrypt string
+outputs secret.encrypted
+
+Decrypt the secret file and output to a new unecrypted file
+Decrypt secret.encrypted file
+Repeat previous process in reverse
+vi secret.txt
+Confirm information matches
+
+=== Handling Encryption Keys with Cloud KMS ===
+Handling Encryption Keys with Cloud KMS
+Introduction
+The process of encrypting and decrypting files requires cryptographic keys.
+Google Cloud’s Key Management Service (Cloud KMS) allows you to generate, use, rotate, and destroy cryptographic keys in a variety of formats.
+Managing the keys is another challenge, one that Cloud KMS meets with its ability to create keyrings as well as keys.
+In this hands-on lab, we’ll establish a new keyring and key, use them to encrypt a formerly top-secret file, and then decrypt the encrypted version.
+
+Logging In to the Environment
+Log in to the lab environment using the credentials provided in a private browser window.
+
+(Note: Different browsers have different names for a private browser window. On Chrome, you'll choose Open Link in Incognito Window. If you're using Firefox, click Open Link in New Private Window, etc.)
+
+On the Google sign-in page, enter the unique username you were provided on the lab instructions page. Click Next.
+Enter the unique password you were provided on the lab instructions page. Click Next.
+On the Welcome to your new account page, click I understand.
+On the Welcome Cloud Student popup, check the box under Terms of service.
+Choose your country of residence, and click AGREE AND CONTINUE.
+Enable Cloud KMS
+From the Google Cloud Platform dashboard, click the navigation menu at the top left of the page.
+In the dropdown, select APIs & Services > Library.
+On the API Library page, type KMS in the search bar and press Enter.
+Select the Cloud Key Management Service (KMS) API.
+Click Enable.
+The Cloud Key Management Service (KMS) API console should load.
+Create a Keyring and Key
+Click the Activate Cloud Shell icon (>_) in the top right.
+In the Cloud Shell popup at the bottom of the screen, click CONTINUE.
+Run the following command in the Cloud Shell to create a new keyring:
+gcloud kms keyrings create my-keyring --location us
+On the Authorize Cloud Shell popup, click AUTHORIZE.
+Create a new key for the keyring we just created:
+gcloud kms keys create my-key --location us --keyring my-keyring --purpose encryption
+List the existing keys to verify that the new keyring and key were successfully created:
+gcloud kms keys list --location us --keyring my-keyring
+Back in the GCP console, go to the navigation menu in the top left and select Security > Key Management.
+Select my-keyring to open it and view the my-key we just created.
+Retrieve the Example File
+Clone the GitHub repository:
+git clone https://github.com/linuxacademy/content-gcpro-security-engineer
+List the contents of the current directory:
+ls
+Change to the content-gcpro-security-engineer/kms-encrypt-lab directory:
+cd content-gcpro-security-engineer/kms-encrypt-lab
+List the contents of the current directory:
+ls
+Click Open Editor in the top-right corner of the Cloud Shell.
+Click Open in a new window.
+In the left menu, navigate to the following: content-gcpro-security-engineer folder > kms-encrypt-lab > top-secret-ufo-1950.tx.
+Review the top-secret-ufo-1950.txt file.
+Encrypt and Decrypt the File
+Return to the Cloud Shell by going back to your previous tab and selecting Open Terminal.
+Run the following command in the Cloud Shell to encrypt the file:
+gcloud kms encrypt --location us --keyring my-keyring --key my-key --plaintext-file top-secret-ufo-1950.txt --ciphertext-file top-secret-ufo-1950.txt.encrypted
+In your editor tab, in the left navigation panel, select top-secret-ufo-1950.txt.encrypted to open and review the contents of the encrypted file.
+In the popup, select Yes.
+Run the following command in the Cloud Shell to decrypt the encrypted file:
+gcloud kms decrypt --location us --keyring my-keyring --key my-key --ciphertext-file top-secret-ufo-1950.txt.encrypted --plaintext-file top-secret-ufo-1950.txt.decrypted
+In your editor tab, in the left navigation panel, select top-secret-ufo-1950.txt.decrypted to open and review the contents of the decrypted file.
+Conclusion
+Congratulations, you've successfully completed this hands-on lab!
+
+== Chapter 6 - Data Protection ==
+=== Identity-Aware Proxy (IAP) ===
+Identity-Aware Proxy
+Establishes a central authorization layer for applications access by HTTPS, so you can use an application level
+access control model instead of relying on network-level firewalls
+
+Controls HTTPS access to your applications and VMs on GCP
+Central authorization layer for application-level access control
+Enforces access control policies for applications and resources
+Allows employees from untrusted networks without the use of a VPN
+
+How IAP Works
+User hits Cloud IAP proxy
+Authentication /Authorization check
+Cloud IAP-enabled app or backend service
+Valid crednetials
+Authorization
+Checks if user has authorized access
+
+Comes from Load Balancing or Cloud Application
+Request URL
+Project information
+Checks user's Browser creds
+Google sign in
+Token in browser cookie
+After authentication IAP checks IAM roles
+When you turn on IAP it creates an OAUTH IAP cookie
+
+Compute Engine can bypass IAP
+
+IAP Connector for on-premises networks
+User hits Cloud IAP proxy
+Authenticates and authorizes user request
+Routes request to Cloud IAP connector
+Forwards the request through an Interconnect connection
+Site to site connection from GCP to on-premises network
+
+Context Aware access
+Access web applications and infrastructure resources from virtually any device anywhere
+VPN-less user access
+Built-in with GCP infrastructure and G Suite
+Integrated with Cloud Identity and Cloud Armor
+Cloud or on-premises
+
+Signed Headers
+Uses JSON Web Token (JWT) to make sure that a request to the app is authorized
+Provides secondary security in case someone bypasses Cloud IAP
+
+IAP TCP Forwarding
+Control who can access administrative services like SSH and RDP over the public internet
+Prevents these services from being openly exposed to the internet
+Must pass authentication and authorization checks before they get to their target resource
+
+IAP Best practices
+Caching
+Should not use a third-party CDN
+CDNs may cache content and serve cached pages to unathetnticated users
+CDN = Content Delivery Network
+
+Securing your application
+To properly secure your app, you must use signed headers
+
+Configuring your firewall
+Make sure all requests to Compute Engine or GKE are routed through the load balancer
+Configure a firewall rule to allow health checking
+Configure source traffice to be routed through GFE when possible
+
+=== Cloud Data Loss Prevention (DLP) ===
+Data Loss Prevention (DLP)
+Allows you to discover, manage and redact sensitive data from anywhere. DLP allows for redaction of sensitive data elements
+like credit card numbers, names, social security numbers, phone numbers, GCP credentials and even data.
+
+Overview
+Scan, discover, classify, and report data from virtually anywhere
+Redact, mask tokenize, and transform text and images
+90+ predefined detectors for other data sources
+Custom-define detection
+Native support for scanning and classifying sensitive data in Cloud Storage, Big Query and Cloud Datastore
+Streaming content API
+Data entered in DLP is covered under all compliance standards
+Results can be imported into BigQuery for analysis or imported into other systems.
+
+infoTypes and infoType Detectors
+DLP uses information types or infoTypes to define what it scans for
+infoType: Type of sensitive data, such as a name, email address, telephone number, credit card number, etc.
+Every infoType defined in CloudDLP has a corresponding detector
+DLP uess infoType detectors in the configuration for its scans to determine what to inspect for and how to transfor findings
+
+Kinds of infoType Detectors
+Built-in infoType detectors
+Country or region specific sensitive data types
+Globally applicable data types
+custom infoType detectors
+Detectors you create yourself
+
+The kinds of Custom infoType Detectors
+Regular custom dictionary detectors
+Simple work lists that Cloud DLP matches on
+Regular custom dictionary detectors are preferred if the word list doesn't change significantly
+Store custom dictionary dectectors
+Generated by Cloud DLP using large lists of words or phrases stored in either Cloud Storage or BigQuery
+Two components: list of phrases and dictionary files
+use for large list of words or phrases - up to tens of millinos
+Regular exptression (regex) detectors
+Create your own infoType detectors
+Used to detect matches based on a regular expression pattern
+
+Inspection Rules
+Fine-tune scan results
+Exclusion rules
+Hotword rules
+
+Exclusion rules
+Decrease the number of findings returned
+
+Hotword rules
+Increase the quanityt or change the likelihood vaule of findings returned
+
+Likelihood Value
+The likelihood is determined by the number of matching elements a result contains
+LIKELIHOOD_UNSPECIFIED
+VERY_UNLIKELY
+UNLIKELY
+POSSIBLE
+LIKELY
+VERY_LIKELY
+
+De-Identifaction
+process of removing identifying information from data. The API detects sensitive data such as PII and then uses a de-identification transformation
+to mask, delete, or otherwise obscure the data.
+
+Date Shifting
+Randomly shift a set of dates but preserve the sequence and duration of a period of time.
+Done in context to an individual or an entity.
+Each individuals dates are shifted by an amount of time that is unique to that individual
+
+Generalization and bucketing
+Process of taking a distinguishing value and abstracting it into a more general, less distinguishing value
+Attempts to preserve data utility while also reducing the indentifiability of the data.
+DLP supports a generalization technique called bucketing
+Groups records into smaller buckets
+
+Pseudonymization (tokenization)
+Technie in which sensitive data is replaced with surrogates (tokens) in a consistent manner
+Surrogates retain their referential properties within the de-identified dataset
+Surrogates are able to (depending on transformation used) the surrogates can be reversed back into their original values
+
+Image inspection and redaction
+Cloud Data Loss Prevention can inspect for and redact sensitive content that exists within images
+Images must first be encoded in base64 and an image type must be speicified. Inspection and redaction are two distinct actions.
+
+Inspection
+Inspects base64-encoded image for the specified infoTypes
+Returns the detected infoTypes, along with one or more sets of pixel coordinates and dimensions
+
+Redaction
+Inspects base64-encoded image for the specified infoTypes
+Returns a new base64-encoded image in the same image formate as the original imge
+DLP redacts-or masks with opaque boxes- any sensitive data findings
+
+DLP can inspect for and redact sensitive content that exists within text. Texual information is feed into DLP through API
+
+The API takes the following as arguments
+A string of text
+The placeholder text that will replace sensitive data
+A list of one or more infoTypes that you want to redact
+Returns the string with any sensitive data replace by your chosen placeholder
+
+Risk Analysis
+Process of analyzing sensitive data to find properties that migh increase the rist of subjects being identified
+Sensistive information about individuals being revealed
+Help determine effective de-identification strategy
+Help monitor for any changes or outliers after de-identification
+
+Templates
+Create and persist configuration information to use with DLP at scale from a single source
+Useful for decoupling configuration information
+What you inspect for
+How you de-identify it
+Twp types of templates
+Inspection and de-identification
+
+=== Cloud Data Loss Prevention (DLP) Hands-On ===
+Upload a file with sensitive data from the local machine to Cloud Storage
+Files in bucket
+Image with number
+Text file with name/number
+
+Create a job in the DLP console to id sensitive data within the bucket
+Menu > Security > Data Loss Prevention
+Create > Job
+Name job
+Specify location (bucket or bigQuery table)
+
+Location type, folder or bucket
+Choose bucket
+
+Sampling
+Another way to reduce number of objects scanned
+Turn sampling to 100%
+Options
+Choose no sampling
+Use all supported files
+Include/Exclude paths uses a regex
+Field available for template name
+Leave blank for demo
+
+infoTypes
+Delete non-relevant
+Leave ones you want
+Can choose custom infoTypes next
+
+Can choose inspection rulesets next
+
+Confidence threshold
+Leave default
+
+Add actions
+What to do when complete?
+Save to BigQuery
+Publish to pub/sub
+Notify by email
+
+Schedule
+Add timespan or run as one off or via trigger (days weeks etc)
+Can set to run if new files are added
+
+At the end you'll see a JSON file with all the inputs
+
+Return findings to console
+Job details
+Shows expected two files
+
+=== Distributed Denial of Service Attacks (DDoS) Mitigation ===
+DDoS Mitigation
+DDOS attack is an attempt to render a service or application unavailable to it's end users
+Attackers use multiple resources (often a large number of compromised hosts/instances) to orchestrate large-scale attacks against targets
+
+Protecting Shared Infrastructure
+Mechanisms in place to protect the GCP cloud
+Ensure that no single service can overwhelm the shared infrastructure
+Provide isolation among customers using the shared infrastructure
+DDoS defense involves
+Deployiong detection systems
+Implementing barriers
+Absorbing attacks by scaling to prevent attackers from overwhelming or disabling access to services or applications
+Shared responsibility model
+Google-provided mechanisms
+Best practices to implement
+
+Reduce the attack surface
+Isolate and secure network using subnets, firewalls, tags and IAM
+Use firewall rules and/or protocol forwarding
+Anti-spoofing protection provided for the private network by default
+Automatic isolation between virtual networks
+
+Isolate internal traffic from the external world
+Deploy instances without public IPs unless necessary
+Set up a NAT gateway or SSH bastion to limit the number of instances that are exposed to the internet
+Deploy internal load balancing on internal client instances that access internally deployed services to avoid exposure to the external world
+
+Enablle Proxy-Based Load Balancing
+HTTP(S) or SSL proxy load balancing, allows Google infrastructure to mitigate and absorb many Layer 4 and below attacks
+Syn floods, IP fragment floods, port exhaustion etc.
+Disperse attacks across instances around the globe with HTTP(S) load balancing to instances in multiple regions
+
+Scale to absorb the attack
+Protection by Google frontend infrastructure
+Global load balancing
+Scales to absorb certain types of attacks
+Anycast-based load balancing
+HTTP(S) load balancing and SSL proxy enable a single anycast IP to front-end
+Autoscaling
+
+Protection with CDN Offloading
+Google Cloud CDN acts as a proxy
+Caching service
+Helpful for static content
+
+Deploy Third-Party DDoS Protection Solutions
+Third-party DDoS protection solutions can protect against DDoS attacks
+
+App Engine deployment
+Fully multi-tenant system
+Safeguards in place
+Sits behind the Google front end
+Specify a set of IPs/IP networks
+
+Google Cloud Storage
+Use signed URLs to access Google Cloud Storage
+
+API Rate Limiting
+Define the number of allowed requests to Compute Engine API
+API rate limits apply on a per-project bassis
+Projects are limited to an API rate limit of 20 requests/second
+
+Resource Quotas
+Quotas help prevent unforeseen spikes in usage
+
+=== Security Partner Products  ===
+Security Partner Ecosystem
+Infrastructure protection
+Next-gen firewalls
+Web application firewalls (WAFs)
+Web proxies and cloud gateways
+Server endpoint protection
+DDoS protection
+Container security
+
+Data protection
+Encryption and key management
+Data/information loss protection
+
+Logging and monitoring
+
+Configuration, vulnerability, risk and compliance
+Vulnerability scanners
+Governance, risk management, and compliance
+
+=== Cloud Armor ===
+Cloud Armor works with Global HTTP(S) Load Balancer to provide built-in defenses against infrastructure DDoS attacks.
+The service uses security oplicies that are made up of rules that allow or prohibit traffic from IP addresses or defined in the rule
+
+Works with Global HTTP(S) Load Balancer and is implemented at the edge of Google's network in Google's points of presence
+HTTP, HTTPS, HTTP/2
+
+Security policies
+Deny list and allow list rules
+Can be specified for back-end services
+IP address allow list and deny list rules
+Deny or allow list for IP address/CIDR ranges
+IPv4/IPv5
+Designate the order of the rules
+Preview mode
+Preview the effects of the rules without going live
+Logging
+Policy name, matched rule priority, associated action, and related information
+
+Limit access to the GCP HTTP(S) load balancer
+Allow list for IP/CIDR range
+
+Block unauthorized or malicious traffic at the edge with deny lists
+
+Allow traffic to the HTTPS load balancer only from an allow-listed third-party security providr and other authorized users
+
+=== Cloud Security Scanner ===
+Cloud Security Scann is a web security scanner for common vulnerabilities in App Engine, Compute Engine and GKE applications
+
+Automated vulnerability scanning
+Scan and detect common vulnerabilities
+XSS, Flash injection, mixed content, clear text password, usage of insecure JavaSCript libraries
+Crawls your application
+Follows all links from starting URL
+Attempts to exercise as many user inputs and event handlers as possible
+Use with caution in live environment
+Pushes buttons
+Clicks links
+Posts test strings as comments
+May generate large number of test emails
+Block individual UI elements
+Exclude URLs
+Very low false positive rates
+Immediate or scheduled scans
+Used by Google or non-Google accounts
+No cost
+
+=== Cloud Security Command Center ===
+A dashboard an analytics system for surfacing, understanding and remediating GCP security and data risks across an organization
+Single centralized dashboard
+Gather data, id threats and act on them
+View and monitor inventory of cloud assets
+Scan for sensitive data
+Detect vulnerabilities and anomalous behavior
+Review access rights
+Unified inventory of GCP resources
+Security insights on cloud resources
+Understanding of security and data attack surface
+Inspect your current and past asset states
+Native and third party integration for security findings
+
+Asset Discover and Inventory
+View all assts within organization
+Projectd
+Asset type - new, current, changed
+Change type
+IAM policy
+
+Sensitive Data Identification
+Native integration with Data Loss Prevention (DLP)
+DLP can send sensitive data findings to SCC
+Enabled Cloud DLP as a security source for Cloud SCC
+
+Application vulnerability detection
+Native integration with Cloud Security Scanner (CSS)
+CSS can send vulnerability finds like XSS and Flash injection to SCC
+Enable CSS as a security source for Cloud SCC
+
+Access Control Monitoring
+Ensure the right access control policies are in place
+Alerting when policies are misconfigured or changed
+native integration with Forseti
+
+Anomaly Detection from Google
+Id threats with built-in anomaly detectdion
+Botnets, cryptocurrentcy mining, anomalous reboots and suspicious network traffic
+
+Third-Part Security Tool Inputs
+Integrate output from your existing third-party security tools into SCC
+Allows for detection of DDoS attacks, compromised endpoints, compliance policy violations, network attacks and instance vulnerabilities and threats
+
+Real-Time Notifications
+Email and SMS notifications with Cloud Pub/Sub notification integration
+
+=== Forseti ===
+Community driven open source security tools that consist of core modules that you can enable, configure and execute idependently of each other
+
+Designed for security at scale
+Allows creation of rule-based policies by codifying the process
+Unexpected changes can be reverted to a known good state and notifications sent
+Ensures security is goverened by consistent intelligent rules
+Core Forseti modules are deployed and configured to take a snapshot of GCP resources when installed
+Resources are then monitored and notify you of any changes
+Inventory snapshot is saved in Cloud SQL.
+
+Inventory
+Saves an inventory snapshot of your GCP resources to Cloud SQL
+Understand current resources in GCP
+Can be configured to update snapshots at any time
+
+Scanner
+Uses inventory to regularly compare role-based access policies against resources
+Ensures policies stay consistent
+Policies taht are in violation are saved to Cloud SQL or Cloud Storage
+
+Enforcer
+On-demand command line tool that compares policies in batch mode over all managed projects or against selected projects
+Compares current state of firewall policies to desired state
+If changes are found, it will automatically revert them to the desired state
+
+Explain
+Provides visibility into IAM policies
+Who has access to which resources
+How a given user can interact with a resource
+Why a principal does or does not have permission on a resource
+What roles grant a permission
+Which roles aren't in sync with recent changes
+
+Notifier
+Dispatches a variety of messages through different channels and formats
+Summary of results
+Inventory notifications
+Violation notificiations
+
+Various channels can be used to perform notifications
+Email
+Slack
+Cloud Storage
+
+Inventory collects information about GCP resources
+Inventory stores info in Cloud SQL for review and use by other modules
+Scanner compares Inventory to policy rules
+Notifier sends scanner and inventory results to one or more configured outputs: Cloud Storage, SendGrid, Slack or SCC
+Explain used to query and understand Cloud IAM policies
+Enforcer ensures policies match your desired state
+The command line interface can be used to query Forseti data
+Data Studio or MySQL Workbench is used for visualization of Forseti Data
+
+== Chapter 7 - Compute and Storage Security ==
+=== Compute Engine Best Practices ===
+Service Accounts
+All instances should run with service accounts
+Create a new service accounts
+Do not use default service account
+Apply the principle of least privilege
+Assign only the resources required
+Grant users the serviceAccountUser role
+Grant role at the project level
+Give members the ability to create and manage instances that use a service account
+Permissions to:
+Create an instance
+Attach a persistent disk
+Set instance metadata
+use SH to connect to the instance
+Reconfigure an instance to run as a service account
+
+Auditing
+Track how your Compute Engine resources are modified and accessed
+Who did what, where and when
+
+Networking
+Hosting Compute Engine
+Instances that do not require intra-network communication: different VPC networks
+Instances that require intra-network communication: same VPC network
+
+Image management
+Restrict the use of public images
+Allow only approved images
+Harden ed with approved software
+Use of Trusted Image feature
+Set at the Organization level
+Use automated process to install software
+Avoid manual processes
+Automate security patching using a pipeline
+
+Updating and Patching
+Patching and other security updates should always be done at the image level
+Compute Engine instances should be replaced, never updated
+Immutable instances
+
+Securely connecting to an instance
+Protect internet-facing Compute Engine instances
+Firewalls
+HTTPS/SSL
+Port forwarding over SSH
+SOCKS proxy over SSH
+A SOCKS proxy is an additional feature that some VPN providers offer, allowing users to fake their virtual location (also known as location spoofing).
+A SOCKS5 proxy allows you to hide your IP address from online services
+
+Connect to instances without external IPs wher possible
+Bastion hosts and SSH forwarding
+Bastion host is a hardened public facing instance used to access other servers
+Jump box, ala sagebrush or tumbleweed
+
+Cloud IAP for TCP Forwarding
+VPN
+NAT Gateway
+Interactive serial console access
+HTTPS and SSL proxy load balancers
+
+=== Google Kubernetes Engine (GKE) Security ===
+GKE is a managed environment for deployting containerized applications.
+It groups the containers that make up an application into logical units for easy discovery and management.
+
+Overview
+Orchestration platform for containers
+Kubernetes handles:
+Deployment
+Auto-scaling
+Updates
+Load balancing
+Auto-recovery
+
+Architecture
+Cluster
+The foundation of GKE. Consists of one cluster master and one or more worker machines called nodes.
+
+Cluster master
+Runs the Kubernets control plane processes, including the Kubernetes API server, scheduler and core resource controllers
+API calls with HTTP/gRPC
+OR via kubectl
+
+Nodes
+Worker machines that run the containerized applications.
+Each node is a Compute Engine VM instances that GKE creates on your behalf when you create a cluster
+
+Pods
+Smallest, simplest deployable unit. Represents a single instance of a running process in your cluster
+
+GKE Terminology
+Internal Cluster Networking
+Cluster IP
+IP address assigned to a service
+IP is stable for the lifetime of the service
+
+Node IP
+IP address assigned to a given node
+Assigned from a cluster's VPC network
+Each node has a pool of IP addresses
+
+Pod IP
+IP address assigned to a given pod
+Shared with all containers in that pod
+Ephemeral
+
+Label
+Arbitrary key/value pair that is attached to an object
+
+Service
+Grouping of multiple related pods into a logical unit using labels
+Stable IP address, DNS entry and ports
+Provides load balancing among the set of pods whose labels match all the labels defined in the label selector when the service is created.
+
+Internal Cluster Networking
+kube-proxy
+A component running on each node that manages connectivity among pods and services
+Egress-based load balancing controller
+Continually maps the cluster IP to healthy pods at random
+
+Namespace
+Virtual clusters backed by the same physical cluster
+Intended for user in environments with many users spread across multiple teams or projects (Developmnet, QA, Production)
+A way to divide cluster resources between multiple users
+Unique name within the cluster
+
+Kubernetes Security
+Authentication and Authorization
+Service accounts (pod level)
+Disable ABAC (attribute-based access control) and use RBAC (role-based access control)
+RBAC allows you to grant permissions to resources at the cluster/namespace level
+Principle of least privilege
+Reduce node service account scopes
+
+Control Plane Security
+Components managed and maintained by Google
+Disable Kubernetes web UI
+Disable authentication with client certificates
+Rotate credentials on a regular basis
+
+Node Security
+Use Container-Optimized OS for enhanced security
+Locked-down firewall
+Read-only filesystem where possible
+Limited user accounts and root login disabled
+Patch OS on a regular basis - enable automatic upgrades
+Protect the OS on the node from untrusted workloads running in pods
+Use metadata concealment to ensure pods do not have access to sensitive data
+
+Network Security
+All pods in the cluster can communicate with each other
+Restrict ingress/egress traffic of pods using network policies in a namespace
+Load balance pods with a service of type LoadBalancer
+Restrict which IP address ranges can access endpoints
+Filter authorized traffic using kube-proxy
+Use Cloud Armor and/or IAP proxy when using external HTTPS load balancer
+
+Securing Workloads
+Limit pod container process privileges using PodSecurityPolicies
+To give pods access to GCP resources
+Workload identity (recommended)
+Node service account
+Service account JSON key (discouraged)
+Difficult to securely manage keys
+
+Best Practices
+Package a single application per container
+Easier to debug
+LInux signals are handled better
+Properly handle PID 1, signal handling and zombie processes
+Optimize for the Docker build cache
+Allows acceleration of later builds
+Remove unnecessary tools
+Build the smallest image possible
+Lightweight
+Properly tag your images
+Use trusted images
+Be careful when using public images
+Use container registry vulnerability scanning
+Analyze container images
+Can be used with Google App Engine and GKE
+
+=== Secrets Management ===
+Secrets are secure objects that store sensitive data such as passwords, OAuth tokens and API keys.
+Secrets give you control over how sensitive data is used and reduce the risk of exposing the data to unauthorized users
+
+Security Concerns when using Secrets
+Authorization
+Access managment
+
+Verification of usage
+Auditability on a per-secret level
+
+Encryptiong at rest
+Protection in case of unauthorized access
+
+Rotation
+Rotate or refresh secrets automatically or as needed
+
+Isolation
+Separation
+Managing vs using secrets
+Separation of duties
+
+Solutions
+In code, encrypted using Cloud KMS
+Encrypt secrets at the application layer
+Limit the scope of access to the secret
+Restricted to all developers with access to the code
+Must have access to both the code and access key
+Audited for those who do have access
+
+Cloud Storage bucket, encrypted at rest
+Limits access to smaller set of developers
+Auditable
+Separation of systems
+Separate from code repository
+Able to rotate secrets more easily
+
+Third party secrets management solution
+Dedicated secrets management tool
+Auditable
+Separation of systems
+Rotate secrest automatically
+
+Changing Secrets
+Rotating Secrets
+Rotate secret regularly, especially for security
+Store few versions of a secret
+Rotate/roll back as needed
+
+Caching Secrets Locally
+May be needed for the application
+Can be rotated frequently
+Several times per hour
+Can refresh secrets quickly
+Great for outage scenario
+Not so great for misconfiguration
+
+Separate solution or Platform
+Platform agnostic
+Automatic and schedule secret rotation
+
+Managing Access
+Limiting Access
+Create two projects
+Cloud Storage to store secrets
+Cloud KMS to manage encryption keys
+Assign proper roles to access secrets
+Service account can be used
+Store each secret as an encrypted object in Cloud Storae
+Group secrets as needed
+Rotate secrets and encryption keys regularly
+Protect each bucket by using encryption
+Cloud KMS at the application layer (recommended)
+Default bucket encryption
+Enable Cloud Audit logs for activity monitoring
+
+Restricting and Enforcing Access
+Access controls on the bucket in which the secret is stored
+Support for multiple secrets (objects) per bucket
+Single secret per bucket
+Recommended
+Access controls on the key that encrypts the bucket in which the secret is stored
+Support for multiple secrets (objects) per key
+Single secret per key
+Service account recommended
+
+Best Practicies
+Limit the amount of data that any one encryption key protects
+Cryptographic isolation
+Allows for more granular control over secret access
+Helps prevent accidental permissions
+Supports more granular auditing
+Store each secret as it's own object
+Store similar secrets in the same bucket
+One encryption key per bucket
+Regularly rotate keys/secrets to limit the lifecycle of each
+Enable Cloud Audit logging
+
+Creating/Using Secrets on Kubernetes
+Generic (local file, directory, or literal value)
+Recommended
+dockercfg secret for use with a Docker registry
+TLS secret from an existing KMS public/private key pair
+Secret values are encoded in base64
+Encrypt secrets by
+Specifying environment variables that reference the secret's values
+Mounting a volume containing the secret
+Third-party tool can be used
+
+=== Cloud Stoarage and Storage Types ===
+You can create buckets to store your data. Each bucket has three properties that you sepcify at creation time
+A globally unique name, a location where the bucket and it's contens are stored and a default storage class for objects added to the bucket.
+
+Overview
+Cloud Storage offers four storage classes:
+Multi-regional
+Regional
+Nearline
+Coldline
+
+All storage classes provide
+Low-millisecond latency
+High Durability
+
+Storage classes differ by
+Availability
+Minimum storage duration
+Pricing
+
+The storage class set for an object affects its avilability and pricing
+
+An objects existing storage class can be changed
+rewriting the object
+Object lifecycle management
+
+Create bucket, needs to be globally unique
+Select storage class
+
+Storage Classes
+Mutli-regional
+Designed for frequently accessed data
+hot objects
+Website content, mobile apps, gaming apps
+Highest availability
+Geo-redundant
+United States, European Union etc
+Dual-regional
+Similar to regional storage class
+Provides high availability
+
+Regional
+Design for storing data in the same region
+Better performance for high-compute workloads
+Lower cost than Multi-Regional
+Data stored can only be placed in regional locations
+us-central1
+asia-east1
+Lacks high availability
+
+Nearline
+Designed for infrequently accessed data
+Read or modify data once a month or less
+Data backup
+Disaster recovery
+Archival storage
+Low cost
+Highly durable
+Ge-redundancy available
+30-day minimum storage duration
+
+Coldline
+Designed for archival storage
+Access at most once a year
+Data backup
+Disaster recovery
+Very low cost (cheapest)
+Highly durable
+Data available within milliseconds
+Costs for data access
+Geo-redundancy available
+90-day minimum storage duration
+
+Bucket vs Object Storage Class
+Bucket default storage class
+Specified when creating your bucket
+Defaults to Standard storage class
+Regional or Multi-Regional
+Objects added use the default unless otherwise specified
+Bucket storage class can be changed
+Only new objects will be affectred
+
+Object storage class
+Storage class for objects can be specified
+If not specified, object will take on default storage class of the bucket
+Can be changed later automatically using Object Lifecycle Management
+Only new objects will show change, old objects will remain as is
+
+Object Lifecycle Management
+Set of rules that apply to current and future objects in a bucket
+Time to Live (TTL)
+Archiving older versions
+Downgrading storage
+Specified action is automatically performed when objects meet the criteria of that rule
+Single/multiple criteria
+
+Lifecycle Actions
+Delete
+Delete live and/or archived objects
+Cannot be undone
+SetStorageClass
+Change the storage class of live and/or archived objects
+Applies to versioned and non-versioned objects
+Object Lifecycle Behavior
+At least one condition is required
+Asynchronous regular inspection on each bucket
+Does not rewrite an object when changing its storage class
+
+=== Cloud Storage Permissions and Access Control Lists (ACLs) ===
+Identity and Access Management
+Grants access to buckets as well as bulk access to a bucket's objects
+Can be add to project or bucket
+Broad control over buckets
+No fine-grained control
+Set the minimum permissions needed
+Recomended to set permissions for buckets
+
+Access Control Lists (ACL's)
+Customize access to individual objects within a bucket
+Can be added to bucket or object
+Fine-grained control over individual objects
+Works in tandem with IAM
+Public access can be granted to objects
+Defined by permission (what) and scope (who)
+Permission
+Reader, writer, owner
+Scope
+Google Account
+Google group
+Convenience values for projects (owners-[project#])
+Gsuite/Cloud Identity domain
+All Google account holders
+AllUsers
+
+Default ACLs
+All new buckets assigned with a default ACL
+When default ACL for bucket is changed, it is propogated to all objects
+View current ACL
+gsutil defacl get gs://BUCKET-NAME
+Command line or API only
+
+Signed URL's
+A URL that provides time-limited read/write/delete access to an object in cloud storage
+Those who have acces stot he URL can access the object for the duration of the time specified
+No Google account is needed for access
+Created wit hgsutil command or API
+gsutil signurl OPTIONS KEY-LOCATIONS OBJECTURL
+
+=== Data Retention Policies using Bucket Lock ===
+Bucket Lock
+Allows you to configure a data retention policy for a Cloud Storage bucket to govern how long objects in the bucket
+must be retained. The feature also allows you to lock the data retention policy, permanently preventing the policy from being
+reduced or removed
+
+Overview
+Used for Write Once Read Many (WORM) storage
+Prevents deletion or modification of data for a specified time period
+Helps meet compliance, legal and regulatory requirements for data retention
+Works with all tiers of Cloud Storage
+Lifecycle policies can be applied to automatically move locked data to colder storage classes
+
+CAUTION
+Locking a retention policy is an irreversible action. Once locked you must delete the entire bucket in order to remove the
+bucket's retention policy. However, before you can delete the bucket, you must be able to delete all of the objects in the bucket.
+This is only possible if all objects have reached the retention period set by the retention policy.
+
+Retention Policies
+A retention policy can be included when creating a new bucket
+Add a retention policy to an existing bucket
+Ensures that all current and future objects in the bucket cannot be deleted or overwritten until they reach the age defined in the policy
+Tracked by retention expiration time metadata
+
+Retention Periods
+Measured in seconds
+Can be set in days, months or years
+Maximum is 100 years
+
+Retention Policy Locks
+Prevent the policy from ever being removed
+Prevent the retention period from ever being reduced
+Once a retention policy is locked, you cannot delete the bucket until every object has met the retention period
+Locking a retention policy is irreversible
+Project-wide lien is put in place by Object Storage
+
+Object Holds
+Metadata flags that are placed on individual objects
+Objecst with holds cannot be deleted
+Event based holds
+Temporarly holds
+Event-based holds can be used in conjunction with retention policies to control retention based on event ocurrences
+Temporary holds can be used for regulatory or legal investigation purposes
+Objects can have one, both  or neither
+
+Compliance
+Can be used to comply with financial insititution regulatory requirements
+Electronic record retention
+Regulations include Securities and Exchange (SEC) Rule
+Commodity Futures Trading Commission (CFTC) Rule
+Financial Industry Regulatory Authority (FINRA) Rule
+
+
+=== BigQuery Security ===
+BigQuery is a highly scalable, cost-3ffective serverless cloud-based data warehouse that enables super-fast SQL queries using the power
+of Google's backbone infrastructure
+
+Overview
+Serverless
+Highly available/durable
+Real-time analytics
+Standard SQL
+Automatically back up and restore
+Petabyte scale
+Foundations for ML/AI
+Data ingestion through API
+Integration with DLP, Cloud Storage and Stackdriver
+
+Authorized Views
+View access to a dataset
+Cannot assign access controls directly to tables or views
+Lowest level is the dataset level
+Allows you to share query results with users/groups
+Restricts acces sto the underlying tables
+Allows you to use the view's SQL query to restrict the columns (fields) users are able to query
+Must be created in a separate dataset
+Required permissions for dataset that contains the view:
+bigquery.tables.create
+Required permissions for dataset that gives access to the view:
+bigquery datasets.get
+
+Exporting Data
+Data can be exported in several formats
+CSV, JSON, Avro (used for Dataproc)
+Up to 1GB data to a single file; >1 GB multiple files needed
+Can only export to Cloud Storage
+Permissions neded to export
+bigquery.tables.export
+bigquery.jobs.create
+
+Identifying Sensitive Data
+Datasets can be scanned for PII with DLP
+
+=== Applying Signed URLs to Cloud Storage Objects ===
+Applying Signed URLs to Cloud Storage Objects
+Introduction
+By default, the contents of Cloud Storage buckets are not publicly available.
+You can, however, make an object or an entire bucket viewable by all.
+But sometimes neither of these approaches – totally blocking or totally allowing access – is the right one.
+Google Cloud offers a method for providing limited access to one or more individuals for a specified time: the signed URL.
+Anyone using the signed URL can access a secure bucket object for the predetermined period, regardless of whether they are in your
+organization or even have a Google account.
+In this hands-on lab, we’ll set up a bucket with an object that is not publicly available and then create the necessary
+structure – a service account with a private key – required to generate the signed URL.
+
+Logging In to the Environment
+On the lab instructions page, right-click the Open GPC Console button.
+From the dropdown, select the option to open the link in a private browser window.
+(Note: Different browsers have different names for a private browser window. On Chrome, you'll choose Open Link in Incognito Window.
+If you're using Firefox, click Open Link in New Private Window. Etc.)
+On the Google sign-in page, enter the unique username you were provided on the lab instructions page. Click Next.
+Enter the unique password you were provided on the lab instructions page. Click Next.
+On the Welcome to your new account page, click Accept.
+In the Welcome L.A.! menu, check the box under Terms of service.
+Choose your country of residence, then click AGREE AND CONTINUE.
+Create a Cloud Storage Bucket and Copy the File to It
+From the Google Cloud Platform dashboard, click the navigation menu at the top left of the page.
+In the dropdown, select Storage > Browser.
+Click the Cloud Shell icon at the top right of the page.
+Click Continue on the prompt to start cloud shell.
+Run the following command to create a new bucket:
+gsutil mb -c regional -l us-east1 gs://[BUCKET_NAME]
+Note:
+
+The bucket name must be unique.
+Click Authorize if asked to authorize gsutil.
+Clone the GitHub repository.
+git clone https://github.com/linuxacademy/content-gcpro-security-engineer
+Change to the content-gcpro-security-engineer/signed-url-lab directory.
+cd content-gcpro-security-engineer/signed-url-lab
+List the contents of the current directory.
+ls
+Refresh the page of the GCP console to verify that the new bucket was created.
+Copy the restricted-logo.png file to the bucket.
+gsutil cp restricted-logo.png gs://[BUCKET_NAME]
+In the GCP console, click the name of the bucket to open it and verify that the file was successfully copied into it.
+Create a Service Account and Key
+In the Cloud Shell, run the following command to establish a variable:
+export PROJECT_ID=[YOUR_PROJECT_ID]
+Create a new service account.
+gcloud iam service-accounts create la-service-account --display-name "LA Service Account"
+Establish the appropriate permissions for the service account.
+gcloud projects add-iam-policy-binding ${PROJECT_ID} --member serviceAccount:la-service-account@${PROJECT_ID}.iam.gserviceaccount.com --role roles/viewer
+Create a JSON key for authentication.
+gcloud iam service-accounts keys create key.json --iam-account la-service-account@${PROJECT_ID}.iam.gserviceaccount.com
+Generate a Signed URL
+In the Cloud Shell, install the openssl headers for Debian GNU/Linux
+sudo apt-get install build-essential libssl-dev libffi-dev \
+  python3-dev cargo
+Then, install the pyopenssl library.
+sudo -H pip3 install --upgrade pip
+sudo pip3 install pyopenssl
+Generate a signed URL.
+gsutil signurl -d 10m key.json gs://[BUCKET_NAME]/restricted-logo.png
+Test the URL by clicking the generated link.
+Conclusion
+Congratulations, you've successfully completed this hands-on lab!
+
+== Chapter 8 - Managing Operations in a Cloud Environment ==
+=== Managing GCP Migrations ===
+Migration Planning
+Environments
+On premises
+Full ownership and responsibility
+Private hosting
+Co-location facility
+Part of the physical infrastructure is taken care of
+Cloud hosting
+All infrastructure and virtualization layers are abstracted
+Fully managed services available
+
+Workload types
+Legacy workloads
+Developed with no consideration for cloud
+Difficult to modify
+Expensive to run and maintain
+
+Cloud native workloads
+Natively scalable
+Portable
+Available
+Increase developer productivity
+Eliminate need to manage environment
+
+Environment/Workload Types
+Migration process can change, depending on environment and workload type
+On-premises or private hosting environment with legacy workloads and operations
+On-premises or private hosting environment with cloud native worklodas and operations
+Public cloud or private hosting environment with legacy workloads and operations
+Public cloud or private hosting environment with cloud native workloads and operations
+
+Environment/Workload Types
+Challenging and risky migrations
+Legacy on-premises to cloud
+Private hosting to cloud
+Multiple migration steps
+Successful migrations
+Migrate as little as possible
+Least possible number of migration steps
+
+Types of Migrations
+Lift and Shift
+Minor or no modifications or refactoring
+Miniimum changes to work in target environment
+When refactoring doesn't make sense
+Requires the least amount of time and skill
+
+Improve and Move
+Modernize your workload while you migrate
+Take advantage of cloud-native capabilities
+Increase the portability of the application
+When a major update in workload is necessary
+Requires more time and skill
+
+Rip and Replace
+Decommission and re-write the application
+Fully cloud-native
+Requires the most time and skill
+
+Google Cloud Adoption Framework
+Assesses four themes:
+Learn: The quality and scale of your learning programs
+Lead: The extent to which IT departments are supported by a mandate from leadership to migrate to GCP
+Scale: Extent to which you use cloud-native services and how much operational automation is currently in place .
+Secure: The ability to protect your current environment from unauthorized and inappropriate access
+
+Each theme should fall under one of the three phases:
+Tactical: No coherent plans and quick return on investment with little disruption to the organization.
+Strategic: Plan in place to develop workloads for future scaling needs. Streamline operations to be more efficient.
+Transformational: Cloud operations work smoothly. Interested in the long-term goal.
+
+When you evaluate them you get the Cloud Maturity scale
+
+Migration Path
+Assess
+Take inventory
+Catalog applications
+Train and certify employees
+POCs
+Proof of Concepts
+
+TCO
+Total Cost of ownership
+
+Which application to migrate first
+
+Plan
+Establish identities
+Design resource organization
+Environment/function/granular access hierarchy
+Define groups and roles for resource access
+Design network topology and establish connectivity
+
+Deploy
+Fully manual deployments
+Configuration management tools
+Container orchestration
+Deployment automation
+Infrastructure as code
+
+Optimize
+Build and train your team
+Monitor everything
+Automate everything
+Codify everything
+Arrange according to a plan
+Use managed services instead of self-managed ones
+Optimize for performance and scalability
+Reduce costs
+
+=== Disaster Recovery ===
+Plan for a catastrophe
+Network outage
+Application update failure
+Hardware failure
+Natural disaster
+Data deletion
+With a well-designed, well-tested DR plan, business impact will be minimal
+
+Key DR Metrics
+RTO (Recovery Time Objective)
+Maximum acceptable length oftime that your application can be offline
+
+RPO (Recovery Point Objective)
+Maximum acceptible length of time during which data might be lost from your application due to downtime
+
+Key DR Metrics
+The smaller your RTO/RPO values are the more your application will cost to run
+Time to recover is established in service level agreements (SLAs)
+
+DR Patterns
+Temp refers to how fast to recover
+Cold
+Load balancing with snapshots
+When something goes wrong, spin up server in new zone from snapshot
+
+Warm
+Standby recovery
+Load balancing
+Static site to serve pages until servers brough back up
+
+Hot
+Multi-site recovery
+Instances in different zones
+Highly available
+Attached to multi-zone database
+Expensive
+Duplicates
+
+=== Backup and Recovery ===
+Backups are made as part of a recovery plan either to recover from a a corruption of data so that you can restore to a known good state
+or to restore data in your DR environment if your production environment is down. Typically data backups have a small to medium RTO and
+a small RPO.
+
+On-Premises to GCP
+Create a scheduled take that runs a script or application to transfer data to Cloud Storage
+Automate the process using the gsutil tool:
+gsutil -m cp -r DIRECTORY gs://BUCKET
+Can also use Cloud Storage client libraries
+
+On-Premises to Cloud Storage via a Partner Gateway Solution
+Integrate with a third party colution
+Uses a tiered storage pattern
+Stores the most recent backups on faster storage and slowly migrations older backups to cheaper (slower) storage
+Using GCP gives you the ability to use Cloud Storage Nearline and move to Coldline
+
+In GCP using a Tiered Storage Pattern
+Common pattern for data backups
+Back up to Standard Storage
+Migrate data to a tier that has lower storage costs
+Use when the need to access the backed up data is infrequent
+Take incremental backups or snapshots of persistent disks
+Same can be done with GKE and persistent volumes
+
+== Chapter 9 - Cloud Monitoring ==
+=== Stackdriver Overview ===
+Stackdriver is a suite of tools for logging, monitoring and application diagnostics.
+Stackdriver ingests this data and generates insights via dashboards, charts and alerts.
+
+Overview
+Available for GCP and AWS Connect using and AWS role and GCP Service account
+VM monitoring with agents
+GCP native integration
+
+Stackdriver Suite
+Six available products
+Monitoring
+Metrics, time series, health checks and alerts
+
+Logging
+Central aggregation of all log activity
+
+Error Reporting
+Identify and understand application errors
+
+Debug
+Id code errors in production
+
+Trace
+Find performance bottlenecks in production
+
+Profiler
+ID CPU, memory and time consumption patterns
+
+Benefits
+Single pane of glass with custom dashboards
+Centralized logging platform
+GCP and AWS
+
+Find and fix issues faster
+
+Reduce downtime with real-time alerting
+Third-party integration available
+
+=== Cloud Logging ===
+Overview
+Central pository for log data from multiple sources
+Real-time log managements and analysis
+Tight integration with monitoring
+Platform, system and application logs
+Export logs to other sources
+Long-term storage
+Analysis
+
+Concepts
+Associated primarily with GCP projects
+Logs Viewer only shows logs from one projecdt
+Log Entry records a status or an event
+Project receives log entries when services being used produce log entries
+Logs are a named collection of log entries within a GCP resource
+Each log entry includes the name of its log (e.g., syslog or compute.googleapis.com/activity)
+Logs only exist if they have log entries
+Retention period
+Length of time for which your logs are kept
+
+Types of Logs
+Audit Logs
+Who did what, where and when
+Admin activity
+Data access
+System events
+Access Transparency Logs
+Actions taken by Google staff when accessing your data
+Agent Logs
+Logging agent that runs onf VMs
+Sends system and third-party logs on the VM instance to Stackdriver Logging
+
+Audit Log Types
+Admin Activity Logs
+API calls or other administrative actions
+Always written
+Cannot disable or configure them
+No charge
+
+Data Access Logs
+API calls that create, modify or read resource data provided by the user
+Disabled by default because they can be quite large
+Must be explicitly enabled to be written
+Charges beyond free tier
+
+Audit Logs
+System Event Audit Logs
+GCP administrative actions
+Generated by Google, not by user action
+Always written
+Cannot disable or configure them
+No charge
+
+Access Transparency Logs
+Actions taken by Google staff when accessing your data
+Investigations into your support requests
+Investigations recovering from an outage
+Enabled for entire Organization
+Enterprise support is needed
+
+Agent Logs
+Logging agnet that runs on VMs
+Sends system and third-party logs on the VM intsance to Stackdriver Logging
+Free tier limit
+
+Retention
+Admin Activity audit logs 400 days
+Data Access audit logs 30 days
+System Event audit logs 400 days
+Access Transparency logs 400 days
+Logs other than audit logs or Access Transparency logs 30 days
+$0.50/GB - First 50 GB per project
+
+Exporting Logs
+Useful for
+Storing logs for extended periods (Stackdriver Logging typically holds logs for weeks, not years)
+Using big-data analytics tools on your logs
+Streaming your logs to other applications, other repositories or third parties
+
+IAM Roles
+Logging Admin: Full control and able to add other members
+Logs Viewer: View logs
+Private Logs Viewer : View logs, private logs
+Logs Writer: Grant service account permissions to write
+Logs Configuration Writer: Create metrics and export sinks
+
+=== VPC Flow Logs ===
+VPC Flow Logs record a sample of network flows sent from and received by VM instances.
+These logs can be used for network monitoring, forensics, real-time security analysis and expense optimization.
+
+Overview
+Flow logs can be viewed in Stackdriver Logging
+Aggregatred by connection from VMs and exported in real time
+Subscribing to Cloud Pub/Sub enables streaming so that flow logs can be analyzed in real time
+Enable/disabled VPC subnet
+Each flow record covers all TCP and UDP flows
+Filters can be applied to select which flow logs should be excluded from Stackdriver Logging and exported to external APIs
+No delays in monitoring since Flow Logs are native to the GCP networking stack
+
+Network monitoring
+Real-time visibility into netowrk throughput and performance
+Monitor the VPC network
+Perform network diagnostics
+Capacity Forecasting
+
+Network Usage Insights
+Analyze network usage and network flows
+Between regions and zones
+To specific countries
+
+Network Forensics
+Which IP talked with whom and when
+Analyze incoming and outgoing network flows for compromised IPs
+
+Real-Time Security Analysis
+Real-time streaming with Cloud Pub/Sub
+Integration with SIEM systems (e.g., Splunk)
+Can provide real-time monitoring, event correlation, analysis and security alerts
+
+Logs Collection
+Collected for each VM at specific intervals
+All packets collected for a given interval are aggregated for a period of time into a single flow log entry
+Data is then sent to Stackdriver Logging
+Stored in Stackdriver logging for 30 days
+To store it long, consider exporting
+
+=== Cloud Monitoring and Alerts ===
+Stackdriver monitoring
+Overview
+Full-stack monitoring powered by Google
+Provides insights into what is happening in your environment
+Ntive monitoring of GCp, AWS and third-party applications
+Custom dashboards and alerting across multiple projects
+Stackdriver Logging integration
+Uptime monitoring of internet-accessible applications and outage alerts
+
+Workspaces
+Workspaces organize monitoring information in Stackdriver Monitoring
+Single pane of glass
+To use Stackdriver Monitoring, you must have a workspace
+Best practice is to use a multi-project workspace
+
+Monitoring Agent
+Gathers system and application metrics from your VM and sends them to Stackdriver Monitoring
+Without the agent only CPU, disk traffic, network traffic and uptime metrics are collected
+Using the agent is optional but recommended
+Monitors many third-party applications
+
+Kubernetes Engine Monitoring
+Monitors GKE clusters
+Manages monitoring and logging together
+View a cluster's key metrics (CPU, memory, open incidents)
+View a cluster's
+Infrastructure
+Workloads
+Services
+
+Inspection of a cluster's
+Namespace
+Nodes
+Workloads
+Services
+Pods
+Containers
+
+Alerting
+Policies
+An alerting policy defines the conditions under which a service is considered unhealthy
+When these conditions are met, the policy is triggered and opens a new incident and/or sends notifications
+A policy belongs to an individual workspace
+Each workspace can contain up to 500 policies
+
+Conditions
+Determine when an alerting policy is triggered
+All conditions watch for three things:
+1) Some metric
+2) Behaving in some way
+3) For some period of time
+
+Describing a condition includes
+A metric to be measured
+A test for determining when that metric reaches a state you want to know about
+
+Notification Channels
+How you would like to be notified
+Email, PagerDuty, Slack, SMS
+
+=== Stackdriver APM and Error Reporting ===
+Stackdriver APM (Application Performance Management)
+A set of tools that work with code and applications running on any cloud or even on-premises infrastructure
+to monitor and manage application performance
+
+Overview
+Set of three seperate tools now rolled into one
+Stackdriver trace, debugger, profiler
+Same tools that are used by Google's Site Reliability Engineer (SRE) team
+Gives you insight into how your code runs and allows you to take defensive action to fix problems.
+
+Stackdriver Trace
+Helps to understand how long it takes your application to handle incoming requests (latency)
+Users and applications
+
+Collects latency data from App Engine, HTTP(S) load balancers and applications using the Stackdriver Trace API
+Integrated with GAE Standard (automatic)
+Google App Engine, GAE
+Can be installed on GCE, GKE and GAE
+Can be installed on non-GCP environments
+C# ASP.Net, C# ASP.Net Core, Go, Java, Node.js, Python, PHP, Ruby
+
+Stackdriver Debugger
+Debug a running application without slowing it down
+Capture and inspect the call stack and local variables in your application (snapshot)
+Logpoints allow you to inject logging into running servies
+Can be used with or without access to your app's source code
+If repo not local can be hooked into remote Git repo
+Gihub, Gitlab, Bitbucket
+Integrated with GAE (automatic)
+Can be installed on GCE, GKE and Cloud Run
+Depending on library
+Can be installed on non-GCP environments
+Go, Java, .Net, Node.js, Pythong, PHP, Ruby
+
+Stackdriver Profiler
+Profiler that continuously gathers CPU usage and memory-allocation info from apps
+Helps find patterns of resource consumption
+Low-profile
+Needs profiling agent to be installed
+Can be installed on GCE, GKE, GAE
+Can be installed on non-GCP environments
+G, Java, Node.js, Python
+
+Stackdriver Error Reporting
+Real-time error monitoring and alerting
+Counts, analyzers and aggregates the crashes in your GCP environment
+Alerts you when a new application error occurs
+Details of the error through API
+Notifications in Beta (email, mobile push)
+Integrated into Cloud Functions and GAE Standard
+In Beta for GCE, GKE, GAE Flexible, AWS EC2
+Go, Java, .Net, Node.js, Python, PHP, Ruby
+
+=== Exporting Stackdriver Logs ===
+Log Exports
+Overview
+Export copies of some or all of your logs outside Stackdriver Logging
+store logs for extended periods (>30 days)
+Use big data analysis tools on logs
+Stream logs to other apps, repos or third parties
+
+How it's done
+Involves writing a query that selects the log entries you want to export
+Next choose a destination
+Cloud Storage, BigQuery, Cloud Pub/Sub
+The query and the destination are held in an object called a sink
+Sinks can be created in Projects, Organizations, Folders and billing accounts
+Logs can be exported using Logs Viewer or API
+No cost
+Cloud Pub/Sub destination would be used to export to an external Security Information and Event Management System (SIEM)
+
+== Chapter 10 - Compliance ==
+=== Google's Shared Responsibility Model ===
+Security on GCP is a shared responsibility between Google and the customer.
+The division of responsibility varies depending on the services being used.
+
+Overview
+Shared responsibility
+Security OF the cloud - Google
+Security IN the cloud - User
+
+Boundaries change based on the services selected
+Multiple classes of services can be used simultaneously
+IaaS (Infrastructure as a Service)
+Underlying infrastructure, including hardware, fireware, kernel, OS, storage, network and more.
+This includes using custom-designed hardware, laying private network cables, protecting data centers from physical access
+and following secure software development practices.
+
+PaaS (Platform as a Service)
+Goes a stage further and includes the operating environment (the operating system and application services)
+
+SaaS (Software as a Service)
+Everything except the content and access policies are the responsibility of the provider.
+
+=== Google Security Overview ===
+Google's Security model is an end-to-end process, built on over 15 years of experience
+keeping customers safe on Google apps like Gmail and Search.
+
+Hardware Infrastructure
+Secure Boot Stack and Machine Identity
+All Google servers run cryptographic signatures to ensure they only boot with the correct software.
+Each server has it's own specific identity that can be tied to the hardware root of trust and the
+software with which the machine booted.
+
+Hardware Design and Provenance
+Both the server boards and the networking equipment are custom-designed by Google
+
+Google designs custom chips, including a hardware security chip that is currently being deployed on
+both servers and peripherals. These chips allow Google to securely identify and authenticate legitimate
+Google devices at the hardware level.
+
+Security of Physical Premises
+Google designs and builds it's own data centers with multiple layers of physical security protections
+Limit access to a small portion of Google employees.
+Physical security layers include biometric ID, metal detection, camera, vehicle barriers and laser based intrusion detection.
+
+Serivce Deployment
+
+Access Management of End User Data
+Provides service identity, automatic mutual authentication, encrypted inter-service communication
+and enforcement of access policies defined by the service owner
+
+Encryption of Inter-Serivce Communication
+The infrastructure provides cryptographic privacy and integrity for RPC data on Google's network.
+The infrastructure automatically encrypts all its RPC traffic, which goes over the WAN between data
+centers without explicit configuration from the service
+
+RPC (Remote Procedure Call),
+commonly used by system administrators to remotely control a system for maintenance or to use shared resources.
+
+WAN (Wide Area Network),
+technology that connects your offices, data centers, cloud applications, and cloud storage together.
+
+Inter-Service Access Management
+The owner of a service can use access management features provided by the infrastructure to specify exactly
+which other services can communicate with it
+
+Service Identity, Integrity, Isolation
+Google uses cryptographic authentication and authorization at the application layer for inter-service communication
+Each service has it's own service account identity
+Google's source code is stored in a central repository
+
+User Identity
+Authentication/Login Abuse Protection
+Besides a username and password, the service also intelligently challenges users for additional information
+based on risk factors such as whether they have logged in from the same device or similar location in the past.
+After authenticating the user the identity service issues credentials such as cookies and OAuth tokens for subsequent calls
+Option to use additional factors such as OTPs or phishing resistant security keys when signing in.
+
+Storage Services
+Encryption at Rest
+Google enables hardware encryption support in their hard drives and SSDs and track each drive through it's lifecycle
+Before a decommissioned encrypted storage device leaves Google it is cleaned using a multi-step process that includes
+two independent verifications.
+Devies that do not pass this wiping procedure are destroyed
+
+Data Deletion
+Starts with marking data as "scheduled for deletion"
+Allows recovery from unintentional deletions whether customer-initiated or due to an internal bug or error.
+After being marked as scheduled for deletion the data is deletiong in accordance wth service-specific policies.
+When an end user deletes their account the infrastructure notifies services that handle end user data that the
+account has been deleted. The services then schedule the data associated with the deleted end user data for deletion.
+
+Internet Communication
+Google Front End
+GFE ensures that all TLS connections are terminated using correct certificates and following best practices
+such as support perfect forward secrecy
+
+GFE applies protections against denial of service (DoS) attacks
+Any internal service that choose to public itself externally uses the GFE as a smart reverse-proxy front end
+A reverse proxy is a server that sits in front of web servers and forwards client (e.g. web browser) requests to those web servers.
+Reverse proxies are typically implemented to help increase security, performance, and reliability.
+
+DoS Protection
+Scale of Google enables Google to absorb many DoS attacks
+Multi-tier, multi-layer DoS protections further reduce the risk of any DoS impact on a service running behind a GFE
+Central DoS service running on the infrastructure
+When the central DoS service detects that a DoS attack is happening it can configure the load balancers to drop or
+throttle traffic associated with the attack
+
+Operation Security
+Intrusion Detection
+Tightly controlling the size and contents of Google's attack surgace through preventative measures,
+intelligent detection controls at data entry points, and technologies that automatically remedy certain dangers
+
+Reducing Insider Risk
+Aggressively limit and actively monitor the activities of employees who have been granted administrative access
+Use automation to eliminate the need for privileges access for particular tasks
+
+Safe Employee Devices and Credentials
+Monitoring activity to discover potential compromises or illicit insider activity
+mandatory use of U2F-compatible security keys for employee accounts
+Application-level access management controls
+
+Safe Software Development
+Tools for automatically detecting security bugs
+Manual security reviews
+Identify 0-day exploits and other security issues
+
+=== Standards, Regulations and Certifications ===
+Certifications and Compliance Standards
+Auditing and Compliance
+Google regularly tests, assesses and evaluates the effectdiveness of their technical and organization security and privacy measures
+via third part audits and certifications for G Suite and Google Cloud Platform.
+
+International standards
+ISO 27001 - Information security management systems
+ISO 27017 - Cloud security controls
+ISO 27018 - Protection of personally identifiable information (PII) in public clouds acting as PII processors
+These certifications as well as other 3rd parth audits such as SOC1,2 and 3 cover services without Google Cloud
+
+FIPS 140-2 Validated
+GCP uses a FIPS 140-2 validated modules called BoringCrypto (certificate 2964) in it's production environment
+Thei means that data in transit to the customer between data centers as well as data at rest in encrypted with FIPS 140-2 validated cryptography
+
+HIPAA (Health Insurance Portability and Accountability Act)
+A federal low that establish data privacy and security requirements for certain entities and individuals in order to safeguard
+individuals health information
+
+GDPR (General Data Protection Regulation)
+Regulates how businesses can collect, use and store personal data in Europe
+
+PCI-DSS (Payment Card Industry Data Security Standard)
+Set of network security and business best practices guidelines adopted by the PCI Security Standards Council
+to establish a "minimum security standard| to protect customers' payment card information
+Scope = Process, store, or transmit cardholder data
